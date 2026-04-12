@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>India Renewable Energy Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --teal: #1D9E75;
+      --text: #2d3436;
+      --bg: #f7faf9;
+      --white: #ffffff;
+      --hub: #2ecc71;
+      --consumer: #e74c3c;
+      --border: #dfe6e9;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background: linear-gradient(180deg, #eef8f5 0%, var(--bg) 28%, #ffffff 100%);
+      color: var(--text);
+    }
+
+    .navbar {
+      background: var(--teal);
+      color: var(--white);
+      padding: 1rem 1.5rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+    }
+
+    .navbar h1 {
+      margin: 0;
+      font-size: 1.35rem;
+      letter-spacing: 0.2px;
+    }
+
+    .subtitle {
+      margin-top: 0.25rem;
+      opacity: 0.95;
+      font-size: 0.95rem;
+    }
+
+    .container {
+      width: min(1220px, 95vw);
+      margin: 1.1rem auto 1.5rem;
+      display: grid;
+      gap: 1rem;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.8rem;
+    }
+
+    .card {
+      background: var(--white);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+    }
+
+    .stat-card-top {
+      height: 5px;
+      background: var(--teal);
+    }
+
+    .stat-card-body {
+      padding: 0.9rem 1rem 1rem;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #145f4a;
+      line-height: 1.2;
+    }
+
+    .stat-label {
+      margin-top: 0.25rem;
+      font-size: 0.9rem;
+      color: #55606b;
+    }
+
+    .row-two {
+      display: grid;
+      grid-template-columns: 45% 55%;
+      gap: 1rem;
+      align-items: stretch;
+    }
+
+    .map-frame {
+      width: 100%;
+      height: 480px;
+      border: 0;
+      border-radius: 12px;
+      background: #f0f4f3;
+    }
+
+    .panel {
+      padding: 1rem;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 0.9rem;
+      margin-bottom: 0.35rem;
+      font-weight: 600;
+    }
+
+    .state-select {
+      width: 100%;
+      padding: 0.62rem 0.7rem;
+      border: 1px solid #c9d5d1;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      background: #fff;
+      color: var(--text);
+    }
+
+    .badge-wrap {
+      margin-top: 0.8rem;
+      min-height: 34px;
+      display: flex;
+      align-items: center;
+    }
+
+    .badge {
+      border-radius: 999px;
+      color: #fff;
+      padding: 0.35rem 0.8rem;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .badge.hub { background: var(--hub); }
+    .badge.consumer { background: var(--consumer); }
+
+    .state-stats {
+      margin-top: 0.85rem;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 0.55rem;
+    }
+
+    .mini-stat {
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: #fbfdfc;
+      padding: 0.55rem 0.5rem;
+      text-align: center;
+    }
+
+    .mini-stat .v {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #115c47;
+    }
+
+    .mini-stat .k {
+      margin-top: 0.16rem;
+      font-size: 0.75rem;
+      color: #607079;
+    }
+
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .chart-card {
+      padding: 0.9rem;
+      height: 360px;
+      overflow: hidden;
+    }
+
+    .chart-card canvas {
+      height: 285px !important;
+      max-height: 285px;
+      width: 100% !important;
+    }
+
+    .chart-title {
+      margin: 0 0 0.55rem;
+      font-size: 1rem;
+      color: #184e41;
+      font-weight: 700;
+    }
+
+    .prediction-card {
+      padding: 1rem;
+    }
+
+    .prediction-title {
+      margin: 0 0 0.8rem;
+      color: #184e41;
+      font-size: 1.08rem;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.75rem;
+    }
+
+    .input-wrap label {
+      display: block;
+      font-size: 0.82rem;
+      margin-bottom: 0.26rem;
+      color: #48545c;
+      font-weight: 600;
+    }
+
+    .input-wrap input {
+      width: 100%;
+      padding: 0.56rem 0.62rem;
+      border: 1px solid #c9d5d1;
+      border-radius: 7px;
+      font-size: 0.92rem;
+    }
+
+    .actions {
+      margin-top: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      background: var(--teal);
+      color: #fff;
+      border: 0;
+      padding: 0.64rem 1.1rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn:hover { filter: brightness(0.95); }
+
+    .prediction-result {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #145f4a;
+    }
+
+    @media (max-width: 1040px) {
+      .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .row-two { grid-template-columns: 1fr; }
+      .charts-grid { grid-template-columns: 1fr; }
+      .state-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 720px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .state-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .stat-number { font-size: 1.35rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <h1>India Renewable Energy Dashboard</h1>
+    <div class="subtitle">State-wise Analysis · ML Powered</div>
+  </header>
+
+  <main class="container">
+    <section class="stats-grid" id="summaryCards">
+      <article class="card">
+        <div class="stat-card-top"></div>
+        <div class="stat-card-body">
+          <div class="stat-number" id="totalStates">-</div>
+          <div class="stat-label">Total States</div>
+        </div>
+      </article>
+      <article class="card">
+        <div class="stat-card-top"></div>
+        <div class="stat-card-body">
+          <div class="stat-number" id="energyHubs">-</div>
+          <div class="stat-label">Energy Hubs</div>
+        </div>
+      </article>
+      <article class="card">
+        <div class="stat-card-top"></div>
+        <div class="stat-card-body">
+          <div class="stat-number" id="energyConsumers">-</div>
+          <div class="stat-label">Energy Consumers</div>
+        </div>
+      </article>
+      <article class="card">
+        <div class="stat-card-top"></div>
+        <div class="stat-card-body">
+          <div class="stat-number" id="highestOutput">-</div>
+          <div class="stat-label">Highest Output (MW)</div>
+        </div>
+      </article>
+    </section>
+
+    <section class="row-two">
+      <article class="card">
+        <iframe class="map-frame" title="India Cluster Map" id="indiaMapFrame"></iframe>
+      </article>
+
+      <article class="card panel">
+        <label class="field-label" for="stateSelect">Select a State</label>
+        <select id="stateSelect" class="state-select"></select>
+
+        <div class="badge-wrap" id="clusterBadgeWrap"></div>
+
+        <div class="state-stats">
+          <div class="mini-stat"><div class="v" id="sTotal">-</div><div class="k">Total Renewable</div></div>
+          <div class="mini-stat"><div class="v" id="sSolar">-</div><div class="k">Solar</div></div>
+          <div class="mini-stat"><div class="v" id="sWind">-</div><div class="k">Wind</div></div>
+          <div class="mini-stat"><div class="v" id="sBiomass">-</div><div class="k">Biomass</div></div>
+          <div class="mini-stat"><div class="v" id="sHydro">-</div><div class="k">Small Hydro</div></div>
+        </div>
+      </article>
+    </section>
+
+    <section class="charts-grid">
+      <article class="card chart-card">
+        <h3 class="chart-title">Monthly Total Renewable (Selected State)</h3>
+        <canvas id="monthlyTotalChart" height="220"></canvas>
+      </article>
+      <article class="card chart-card">
+        <h3 class="chart-title">Monthly Energy Mix</h3>
+        <canvas id="monthlyMixChart" height="220"></canvas>
+      </article>
+    </section>
+
+    <section class="card prediction-card">
+      <h3 class="prediction-title">Predict Renewable Output</h3>
+
+      <form id="predictForm">
+        <div class="form-grid">
+          <div class="input-wrap"><label for="ghi">GHI</label><input id="ghi" name="ghi" type="number" step="any" required></div>
+          <div class="input-wrap"><label for="dni">DNI</label><input id="dni" name="dni" type="number" step="any" required></div>
+          <div class="input-wrap"><label for="wind_speed_100m">Wind Speed (100m)</label><input id="wind_speed_100m" name="wind_speed_100m" type="number" step="any" required></div>
+
+          <div class="input-wrap"><label for="air_temp">Air Temp</label><input id="air_temp" name="air_temp" type="number" step="any" required></div>
+          <div class="input-wrap"><label for="relative_humidity">Relative Humidity</label><input id="relative_humidity" name="relative_humidity" type="number" step="any" required></div>
+          <div class="input-wrap"><label for="clearsky_ghi">Clearsky GHI</label><input id="clearsky_ghi" name="clearsky_ghi" type="number" step="any" required></div>
+
+          <div class="input-wrap"><label for="cloud_opacity">Cloud Opacity</label><input id="cloud_opacity" name="cloud_opacity" type="number" step="any" required></div>
+          <div class="input-wrap"><label for="precipitation_rate">Precipitation Rate</label><input id="precipitation_rate" name="precipitation_rate" type="number" step="any" required></div>
+          <div class="input-wrap"><label for="albedo">Albedo</label><input id="albedo" name="albedo" type="number" step="any" required></div>
+        </div>
+
+        <div class="actions">
+          <button class="btn" type="submit">Predict</button>
+          <div class="prediction-result" id="predictionResult"></div>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <script src="map.js"></script>
+  <script src="charts.js"></script>
+</body>
+</html>

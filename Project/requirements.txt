@@ -1,0 +1,11 @@
+pandas
+numpy
+scikit-learn
+matplotlib
+seaborn
+geopandas
+folium
+openpyxl
+joblib
+flask
+flask-cors
