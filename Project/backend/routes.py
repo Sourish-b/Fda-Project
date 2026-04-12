@@ -97,6 +97,8 @@ def get_state_profile(state_name):
 def get_state_seasonal(state_name):
     try:
         state_name = normalize_state_name(state_name)
+        if state_name.lower() == "nct of delhi":
+            state_name = "Delhi"
         df = current_app.config.get("seasonal_df")
         if df is None:
             return jsonify({"error": "seasonal_df not loaded"}), 500
@@ -111,7 +113,20 @@ def get_state_seasonal(state_name):
         if not all([state_col, wind_col, solar_col, biomass_col, small_hydro_col]):
             return jsonify({"error": "Required columns missing in seasonal_df"}), 500
 
+        # 1. Try exact match first
         sdf = df[df[state_col].astype(str).str.lower() == state_name.lower()].copy()
+        
+        # 2. SMART FALLBACK: If exact match fails, check for partial matches (like "Delhi" in "NCT of Delhi")
+        if sdf.empty:
+            for dataset_state in df[state_col].dropna().unique():
+                ds_lower = str(dataset_state).lower().strip()
+                req_lower = state_name.lower().strip()
+                
+                # Check if one is inside the other
+                if (ds_lower in req_lower or req_lower in ds_lower) and len(ds_lower) > 3:
+                    sdf = df[df[state_col].astype(str).str.lower() == ds_lower].copy()
+                    break
+
         if sdf.empty:
             return jsonify({"error": "State not found"}), 404
 

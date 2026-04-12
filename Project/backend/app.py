@@ -2,7 +2,7 @@ import os
 
 import joblib
 import pandas as pd
-from flask import Flask
+from flask import Flask, send_from_directory
 from flask_cors import CORS
 
 
@@ -53,22 +53,32 @@ def _load_startup_data():
 
 
 def create_app():
-    app = Flask(__name__)
+    # 1. Tell Flask where the frontend folder is
+    app = Flask(__name__, static_folder="../frontend", static_url_path="/")
     CORS(app)
+    
     app.config["cluster_df"] = cluster_df
     app.config["profiles_df"] = profiles_df
     app.config["seasonal_df"] = seasonal_df
     app.config["rf_model"] = rf_model
 
+    # 2. Serve the main website at the root URL
+    @app.route("/")
+    def serve_index():
+        return app.send_static_file("index.html")
+
+    # 3. Allow Flask to serve the map file from the model/saved folder
+    @app.route("/model/saved/<path:filename>")
+    def serve_map(filename):
+        return send_from_directory("../model/saved", filename)
+
     try:
         from routes import api_bp
-
         app.register_blueprint(api_bp, url_prefix="/api")
     except Exception as exc:
         print(f"Warning: could not register backend/routes.py blueprint: {exc}")
 
     return app
-
 
 _load_startup_data()
 app = create_app()

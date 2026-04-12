@@ -14,6 +14,16 @@ def _resolve_column(df, candidates):
     return None
 
 
+GEOJSON_STATE_FIXES = {
+    "Orissa": "Odisha",
+    "Uttaranchal": "Uttarakhand",
+    "Delhi": "NCT of Delhi",
+    "Andaman and Nicobar": "Andaman And Nicobar Islands",
+    "Jammu and Kashmir": "Jammu And Kashmir",
+    "Pondicherry": "Puducherry"
+}
+
+
 def run_clustering(df_scaled, df_states):
     """Run KMeans clustering, save diagnostics, and return labeled state DataFrame."""
     if len(df_scaled) < 2:
@@ -94,7 +104,7 @@ def run_clustering(df_scaled, df_states):
     print("Mean Total_Renewable per cluster:")
     print(result_df.groupby("Cluster")["Total_Renewable"].mean())
 
-    return result_df
+    return states
 
 
 def plot_clusters(df_labeled):
@@ -165,7 +175,15 @@ def plot_choropleth(df_labeled):
     geojson_url = "https://raw.githubusercontent.com/geohacker/india/master/state/india_telengana.geojson"
     gdf = gpd.read_file(geojson_url)
 
-    merged = gdf.merge(data, left_on="NAME_1", right_on=state_col, how="left")
+    # 1. Update outdated map names to match your modern dataset
+    gdf["NAME_1"] = gdf["NAME_1"].replace(GEOJSON_STATE_FIXES)
+
+    # 2. Create temporary lowercase columns to ignore case sensitivity (like "and" vs "And")
+    gdf["merge_name"] = gdf["NAME_1"].astype(str).str.strip().str.lower()
+    data["merge_name"] = data[state_col].astype(str).str.strip().str.lower()
+
+    # 3. Merge perfectly using the lowercase column
+    merged = gdf.merge(data, on="merge_name", how="left")
 
     failed_states = sorted(set(data[state_col].dropna()) - set(merged[state_col].dropna()))
     print("States failed to merge:")
@@ -177,9 +195,9 @@ def plot_choropleth(df_labeled):
 
     def _fill_color(cluster_value):
         if cluster_value == "Energy Hub":
-            return "#2ecc71"
+            return "#0ad25d"
         if cluster_value == "Energy Consumer":
-            return "#e74c3c"
+            return "#d32e1b"
         return "gray"
 
     merged["fill_color"] = merged[cluster_col].apply(_fill_color)
@@ -229,7 +247,13 @@ def plot_folium_map(df_labeled):
     geojson_url = "https://raw.githubusercontent.com/geohacker/india/master/state/india_telengana.geojson"
     gdf = gpd.read_file(geojson_url)
 
-    merged = gdf.merge(data, left_on="NAME_1", right_on=state_col, how="left")
+    # 1. Catch ALL map name mismatches
+    gdf["NAME_1"] = gdf["NAME_1"].replace(GEOJSON_STATE_FIXES)
+
+    gdf["merge_name"] = gdf["NAME_1"].astype(str).str.strip().str.lower()
+    data["merge_name"] = data[state_col].astype(str).str.strip().str.lower()
+
+    merged = gdf.merge(data, on="merge_name", how="left")
 
     merged["State Name"] = merged["NAME_1"]
     merged["Cluster"] = merged[cluster_col].fillna("Unmatched")
@@ -237,26 +261,28 @@ def plot_folium_map(df_labeled):
     merged["Solar"] = merged[solar_col]
     merged["Wind"] = merged[wind_col]
 
-    india_map = folium.Map(location=[20.5, 78.9], zoom_start=4)
+    # Center the map perfectly
+    india_map = folium.Map(location=[22.5, 80.0], zoom_start=4.5)
 
     def _style_function(feature):
         cluster_value = feature["properties"].get("Cluster")
         if cluster_value == "Energy Hub":
-            fill_color = "green"
+            fill_color = "#00FF88" # Match Dark Mode Green
         elif cluster_value == "Energy Consumer":
-            fill_color = "red"
+            fill_color = "#FF3366" # Match Dark Mode Red
         else:
-            fill_color = "gray"
+            fill_color = "#232D42" # Match Dark Mode Grey
+            
         return {
             "fillColor": fill_color,
-            "color": "black",
-            "weight": 0.6,
-            "fillOpacity": 0.65,
+            "color": "#0B0F19",
+            "weight": 1.5,
+            "fillOpacity": 0.75,
         }
 
     tooltip = folium.GeoJsonTooltip(
-        fields=["State Name", "Cluster", "Total_Renewable", "Solar", "Wind"],
-        aliases=["State Name", "Cluster", "Total Renewable", "Solar", "Wind"],
+        fields=["State Name", "Cluster", "Total_Renewable"],
+        aliases=["State", "Type", "Total (MW)"],
         localize=True,
         sticky=False,
     )
@@ -272,3 +298,49 @@ def plot_folium_map(df_labeled):
     os.makedirs(save_dir, exist_ok=True)
     output_path = os.path.join(save_dir, "india_map.html")
     india_map.save(output_path)
+
+    # ---------------------------------------------------------
+    # 2. INJECT CLICK EVENTS INTO THE HTML SO IT TALKS TO DASHBOARD
+    # ---------------------------------------------------------
+    with open(output_path, "r", encoding="utf-8") as f:
+        html_content = f.read()
+
+    js_injection = """
+    <script>
+        // Wait 1 second for the map to fully load
+        setTimeout(function() {
+            for (var key in window) {
+                if (key.startsWith('geo_json_')) {
+                    var geojsonLayer = window[key];
+                    geojsonLayer.eachLayer(function(layer) {
+                        
+                        // Make states feel clickable
+                        if (layer.getElement && layer.getElement()) {
+                            layer.getElement().style.cursor = 'pointer';
+                        }
+
+                        // Send the click event to the main dashboard!
+                        layer.on('click', function(e) {
+                            var stateName = e.target.feature.properties["State Name"];
+                            if (window.parent && window.parent.highlightState) {
+                                // Update charts and stats
+                                window.parent.highlightState(stateName);
+                                
+                                // Update the dropdown box to match
+                                var selectEl = window.parent.document.getElementById('stateSelect');
+                                if(selectEl) {
+                                    selectEl.value = stateName;
+                                }
+                            }
+                        });
+                    });
+                }
+            }
+        }, 1000);
+    </script>
+    """
+    # Insert the script right before the closing body tag
+    html_content = html_content.replace("</body>", js_injection + "</body>")
+    
+    with open(output_path, "w", encoding="utf-8") as f:
+        f.write(html_content)
