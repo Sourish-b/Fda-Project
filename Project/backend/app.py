@@ -67,6 +67,10 @@ def create_app():
     def serve_index():
         return app.send_static_file("index.html")
 
+    @app.route("/manual")
+    def serve_manual():
+        return app.send_static_file("manual_entry.html")
+    
     # 3. Allow Flask to serve the map file from the model/saved folder
     @app.route("/model/saved/<path:filename>")
     def serve_map(filename):

@@ -268,9 +268,14 @@
   </style>
 </head>
 <body>
-  <header class="navbar">
-    <h1>India Renewable Energy Dashboard</h1>
-    <div class="subtitle">State-wise Analysis · ML Powered</div>
+  <header class="navbar" style="display: flex; justify-content: space-between; align-items: center;">
+    <div>
+      <h1>India Renewable Energy Dashboard</h1>
+      <div class="subtitle">State-wise Analysis · ML Powered</div>
+    </div>
+    <a href="/manual" style="background: #ffffff; color: #1D9E75; text-decoration: none; padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: 700; font-size: 0.95rem; box-shadow: 0 2px 5px rgba(0,0,0,0.15); transition: transform 0.2s;">
+      + Manual Entry
+    </a>
   </header>
 
   <main class="container">
@@ -337,28 +342,7 @@
       </article>
     </section>
 
-    <section class="card prediction-card">
-      <h3 class="prediction-title">Predict Renewable Output</h3>
-
-      <form id="predictForm">
-        <div class="form-grid">
-          <div class="input-wrap"><label for="ghi">GHI</label><input id="ghi" name="ghi" type="number" step="any" required></div>
-          <div class="input-wrap"><label for="dni">DNI</label><input id="dni" name="dni" type="number" step="any" required></div>
-          <div class="input-wrap"><label for="wind_speed_100m">Wind Speed (100m)</label><input id="wind_speed_100m" name="wind_speed_100m" type="number" step="any" required></div>
-
-          <div class="input-wrap"><label for="air_temp">Air Temp</label><input id="air_temp" name="air_temp" type="number" step="any" required></div>
-          <div class="input-wrap"><label for="relative_humidity">Relative Humidity</label><input id="relative_humidity" name="relative_humidity" type="number" step="any" required></div>
-          <div class="input-wrap"><label for="clearsky_ghi">Clearsky GHI</label><input id="clearsky_ghi" name="clearsky_ghi" type="number" step="any" required></div>
-
-          <div class="input-wrap"><label for="cloud_opacity">Cloud Opacity</label><input id="cloud_opacity" name="cloud_opacity" type="number" step="any" required></div>
-          <div class="input-wrap"><label for="precipitation_rate">Precipitation Rate</label><input id="precipitation_rate" name="precipitation_rate" type="number" step="any" required></div>
-          <div class="input-wrap"><label for="albedo">Albedo</label><input id="albedo" name="albedo" type="number" step="any" required></div>
-        </div>
-
-        <div class="actions">
-          <button class="btn" type="submit">Predict</button>
-          <div class="prediction-result" id="predictionResult"></div>
-        </div>
+    
       </form>
     </section>
   </main>
