@@ -53,7 +53,7 @@ async function loadStateDropdown() {
   if (!select) {
     return;
   }
-
+  states.sort((a, b) => a.state.localeCompare(b.state));
   select.innerHTML = "";
   states.forEach((item) => {
     const option = document.createElement("option");
