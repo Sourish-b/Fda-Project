@@ -4,350 +4,813 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>India Renewable Energy Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     :root {
-      --teal: #1D9E75;
-      --text: #2d3436;
-      --bg: #f7faf9;
-      --white: #ffffff;
-      --hub: #2ecc71;
-      --consumer: #e74c3c;
-      --border: #dfe6e9;
+      --navy:        #2C3E50;
+      --green:       #006D77;
+      --green-light: #008f9c;
+      --gold:        #DAA520;
+      --indigo:      #2E4C8A;
+      --burgundy:    #7B2D42;
+      --bg:          #F8FAFC;
+      --white:       #ffffff;
+      --text:        #333333;
+      --text-muted:  #6B7280;
+      --border:      #E2E8F0;
+      --shadow-sm:   0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.05);
+      --shadow-md:   0 4px 12px rgba(0,0,0,.08), 0 2px 4px rgba(0,0,0,.04);
+      --shadow-lg:   0 10px 28px rgba(0,0,0,.09), 0 4px 8px rgba(0,0,0,.05);
+      --radius:      14px;
+      --radius-sm:   8px;
+
+      /* chart palette */
+      --c-solar:    #F4C430;
+      --c-wind:     #A9C7D4;
+      --c-biomass:  #38761D;
+      --c-hydro:    #673AB7;
     }
 
-    * { box-sizing: border-box; }
+    *, *::before, *::after { box-sizing: border-box; }
 
     body {
       margin: 0;
-      font-family: sans-serif;
-      background: linear-gradient(180deg, #eef8f5 0%, var(--bg) 28%, #ffffff 100%);
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
       color: var(--text);
+      -webkit-font-smoothing: antialiased;
     }
 
+    /* ─── NAVBAR ─────────────────────────────────────────── */
     .navbar {
-      background: var(--teal);
-      color: var(--white);
-      padding: 1rem 1.5rem;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+      background: var(--navy);
+      padding: 0 2rem;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 12px rgba(0,0,0,.25);
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
+
+    .navbar-left { display: flex; flex-direction: column; gap: 2px; }
 
     .navbar h1 {
       margin: 0;
-      font-size: 1.35rem;
-      letter-spacing: 0.2px;
+      font-size: 1.18rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: .2px;
     }
 
-    .subtitle {
-      margin-top: 0.25rem;
-      opacity: 0.95;
-      font-size: 0.95rem;
+    .navbar .subtitle {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,.65);
+      font-weight: 400;
+      letter-spacing: .3px;
+      text-transform: uppercase;
     }
 
+    .btn-manual {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, var(--green) 0%, var(--green-light) 100%);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: var(--radius-sm);
+      padding: .45rem 1rem;
+      font-size: .82rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      letter-spacing: .2px;
+      transition: filter .15s, box-shadow .15s;
+      box-shadow: 0 2px 8px rgba(0,109,119,.35);
+    }
+    .btn-manual:hover { filter: brightness(1.08); box-shadow: 0 4px 14px rgba(0,109,119,.45); }
+    .btn-manual svg { flex-shrink: 0; }
+
+    /* ─── LAYOUT ─────────────────────────────────────────── */
     .container {
-      width: min(1220px, 95vw);
-      margin: 1.1rem auto 1.5rem;
+      width: min(1280px, 96vw);
+      margin: 1.5rem auto 2.5rem;
       display: grid;
+      gap: 1.25rem;
+    }
+
+    /* ─── KPI CARDS ──────────────────────────────────────── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
       gap: 1rem;
     }
 
-    .stats-grid {
+    .kpi-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-md);
+      padding: 1.35rem 1.25rem 1.2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: .55rem;
+      position: relative;
+      overflow: hidden;
+      transition: transform .18s, box-shadow .18s;
+    }
+    .kpi-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent-a), var(--accent-b));
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+    .kpi-card.c1 { --accent-a: var(--green); --accent-b: var(--green-light); }
+    .kpi-card.c2 { --accent-a: var(--gold); --accent-b: #e6c84f; }
+    .kpi-card.c3 { --accent-a: var(--burgundy); --accent-b: #a63050; }
+    .kpi-card.c4 { --accent-a: var(--indigo); --accent-b: #3d62b5; }
+
+    .kpi-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: .2rem;
+    }
+    .kpi-card.c1 .kpi-icon { background: rgba(0,109,119,.1); color: var(--green); }
+    .kpi-card.c2 .kpi-icon { background: rgba(218,165,32,.12); color: var(--gold); }
+    .kpi-card.c3 .kpi-icon { background: rgba(123,45,66,.1); color: var(--burgundy); }
+    .kpi-card.c4 .kpi-icon { background: rgba(46,76,138,.1); color: var(--indigo); }
+
+    .kpi-value {
+      font-size: 2rem;
+      font-weight: 800;
+      line-height: 1;
+      color: var(--text);
+      letter-spacing: -1px;
+    }
+    .kpi-label {
+      font-size: .78rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: .4px;
+      text-transform: uppercase;
+    }
+
+    /* ─── ROW 2 ──────────────────────────────────────────── */
+    .row-two {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 0.8rem;
+      grid-template-columns: 44% 56%;
+      gap: 1.25rem;
+      align-items: stretch;
     }
 
     .card {
       background: var(--white);
-      border-radius: 12px;
+      border-radius: var(--radius);
       border: 1px solid var(--border);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      box-shadow: var(--shadow-md);
       overflow: hidden;
-    }
-
-    .stat-card-top {
-      height: 5px;
-      background: var(--teal);
-    }
-
-    .stat-card-body {
-      padding: 0.9rem 1rem 1rem;
-      text-align: center;
-    }
-
-    .stat-number {
-      font-size: 1.6rem;
-      font-weight: 700;
-      color: #145f4a;
-      line-height: 1.2;
-    }
-
-    .stat-label {
-      margin-top: 0.25rem;
-      font-size: 0.9rem;
-      color: #55606b;
-    }
-
-    .row-two {
-      display: grid;
-      grid-template-columns: 45% 55%;
-      gap: 1rem;
-      align-items: stretch;
     }
 
     .map-frame {
       width: 100%;
-      height: 480px;
+      height: 100%;
+      min-height: 440px;
       border: 0;
-      border-radius: 12px;
+      display: block;
       background: #f0f4f3;
     }
 
-    .panel {
-      padding: 1rem;
+    /* ─── STATE PANEL ────────────────────────────────────── */
+    .state-panel { padding: 1.4rem 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
+
+    .panel-title {
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .8px;
+      color: var(--text-muted);
+      margin: 0;
     }
 
     .field-label {
       display: block;
-      font-size: 0.9rem;
-      margin-bottom: 0.35rem;
+      font-size: .82rem;
       font-weight: 600;
+      color: var(--text);
+      margin-bottom: .4rem;
     }
 
     .state-select {
       width: 100%;
-      padding: 0.62rem 0.7rem;
-      border: 1px solid #c9d5d1;
-      border-radius: 8px;
-      font-size: 0.95rem;
-      background: #fff;
+      padding: .62rem .85rem;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: .92rem;
+      font-family: 'Inter', sans-serif;
+      background: var(--white);
       color: var(--text);
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%236B7280' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right .75rem center;
+      padding-right: 2rem;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .state-select:focus {
+      outline: none;
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(0,109,119,.15);
     }
 
-    .badge-wrap {
-      margin-top: 0.8rem;
-      min-height: 34px;
-      display: flex;
+    .cluster-tag {
+      display: inline-flex;
       align-items: center;
-    }
-
-    .badge {
-      border-radius: 999px;
-      color: #fff;
-      padding: 0.35rem 0.8rem;
-      font-size: 0.85rem;
+      gap: 5px;
+      padding: .3rem .75rem;
+      border-radius: 6px;
+      font-size: .75rem;
       font-weight: 700;
+      letter-spacing: .3px;
+    }
+    .cluster-tag.hub      { background: rgba(0,109,119,.12); color: var(--green); }
+    .cluster-tag.consumer { background: rgba(123,45,66,.12);  color: var(--burgundy); }
+
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: .25rem 0;
     }
 
-    .badge.hub { background: var(--hub); }
-    .badge.consumer { background: var(--consumer); }
-
-    .state-stats {
-      margin-top: 0.85rem;
+    .energy-grid {
       display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 0.55rem;
+      grid-template-columns: repeat(5, 1fr);
+      gap: .6rem;
     }
 
-    .mini-stat {
+    .energy-cell {
+      background: var(--bg);
       border: 1px solid var(--border);
-      border-radius: 9px;
-      background: #fbfdfc;
-      padding: 0.55rem 0.5rem;
+      border-radius: var(--radius-sm);
+      padding: .65rem .4rem .6rem;
       text-align: center;
     }
 
-    .mini-stat .v {
-      font-size: 1rem;
+    .energy-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      margin: 0 auto .35rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .9rem;
+    }
+
+    .energy-val {
+      font-size: .82rem;
       font-weight: 700;
-      color: #115c47;
+      color: var(--text);
+      line-height: 1.2;
     }
 
-    .mini-stat .k {
-      margin-top: 0.16rem;
-      font-size: 0.75rem;
-      color: #607079;
+    .energy-key {
+      font-size: .65rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-top: 2px;
+      text-transform: uppercase;
+      letter-spacing: .3px;
     }
 
+    /* mini progress bar */
+    .mini-bar-wrap { margin-top: 1rem; }
+    .mini-bar-label { display: flex; justify-content: space-between; font-size: .75rem; color: var(--text-muted); margin-bottom: .3rem; font-weight: 500; }
+    .mini-bar-track { height: 6px; background: var(--border); border-radius: 99px; overflow: hidden; }
+    .mini-bar-fill  { height: 100%; border-radius: 99px; transition: width .6s cubic-bezier(.4,0,.2,1); }
+    .mb-solar   { background: var(--c-solar); }
+    .mb-wind    { background: var(--c-wind); }
+    .mb-biomass { background: var(--c-biomass); }
+    .mb-hydro   { background: var(--c-hydro); }
+
+    /* ─── CHARTS ─────────────────────────────────────────── */
     .charts-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 1rem;
+      gap: 1.25rem;
     }
 
-    .chart-card {
-      padding: 0.9rem;
-      height: 360px;
-      overflow: hidden;
-    }
+    .chart-card { padding: 1.3rem 1.4rem 1.2rem; }
 
-    .chart-card canvas {
-      height: 285px !important;
-      max-height: 285px;
-      width: 100% !important;
+    .chart-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
     }
 
     .chart-title {
-      margin: 0 0 0.55rem;
-      font-size: 1rem;
-      color: #184e41;
+      margin: 0;
+      font-size: .85rem;
       font-weight: 700;
+      color: var(--text);
+      letter-spacing: .1px;
     }
 
-    .prediction-card {
-      padding: 1rem;
+    .chart-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .45rem .8rem;
+      margin-top: .6rem;
+      margin-bottom: .8rem;
     }
 
-    .prediction-title {
-      margin: 0 0 0.8rem;
-      color: #184e41;
-      font-size: 1.08rem;
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 0.75rem;
-    }
-
-    .input-wrap label {
-      display: block;
-      font-size: 0.82rem;
-      margin-bottom: 0.26rem;
-      color: #48545c;
-      font-weight: 600;
-    }
-
-    .input-wrap input {
-      width: 100%;
-      padding: 0.56rem 0.62rem;
-      border: 1px solid #c9d5d1;
-      border-radius: 7px;
-      font-size: 0.92rem;
-    }
-
-    .actions {
-      margin-top: 0.95rem;
+    .legend-item {
       display: flex;
       align-items: center;
-      gap: 0.9rem;
-      flex-wrap: wrap;
+      gap: .35rem;
+      font-size: .72rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      flex-shrink: 0;
     }
 
-    .btn {
-      background: var(--teal);
-      color: #fff;
-      border: 0;
-      padding: 0.64rem 1.1rem;
-      border-radius: 8px;
-      font-size: 0.95rem;
-      font-weight: 700;
-      cursor: pointer;
+    canvas { display: block; width: 100% !important; }
+
+    /* ─── FOOTER ─────────────────────────────────────────── */
+    .footer {
+      text-align: center;
+      font-size: .72rem;
+      color: var(--text-muted);
+      padding: 1.2rem 0 2rem;
+      letter-spacing: .2px;
     }
 
-    .btn:hover { filter: brightness(0.95); }
-
-    .prediction-result {
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: #145f4a;
+    /* ─── LOADING SKELETON ───────────────────────────────── */
+    @keyframes shimmer {
+      0%   { background-position: -400px 0; }
+      100% { background-position: 400px 0; }
+    }
+    .skeleton {
+      background: linear-gradient(90deg, #e8edf2 25%, #f3f6f9 50%, #e8edf2 75%);
+      background-size: 800px 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: 6px;
+      display: inline-block;
+      min-width: 60px;
     }
 
-    @media (max-width: 1040px) {
-      .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .row-two { grid-template-columns: 1fr; }
-      .charts-grid { grid-template-columns: 1fr; }
-      .state-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    /* ─── RESPONSIVE ─────────────────────────────────────── */
+    @media (max-width: 960px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .row-two    { grid-template-columns: 1fr; }
+      .charts-grid{ grid-template-columns: 1fr; }
+      .energy-grid{ grid-template-columns: repeat(3, 1fr); }
     }
-
-    @media (max-width: 720px) {
-      .form-grid { grid-template-columns: 1fr; }
-      .state-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .stat-number { font-size: 1.35rem; }
+    @media (max-width: 540px) {
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .navbar h1  { font-size: 1rem; }
     }
   </style>
 </head>
 <body>
-  <header class="navbar" style="display: flex; justify-content: space-between; align-items: center;">
-    <div>
+
+  <!-- ───────────── NAVBAR ───────────── -->
+  <header class="navbar">
+    <div class="navbar-left">
       <h1>India Renewable Energy Dashboard</h1>
-      <div class="subtitle">State-wise Analysis · ML Powered</div>
+      <span class="subtitle">State-wise Analysis &mdash; Powered by Predictive ML Analysis</span>
     </div>
-    <a href="/manual" style="background: #ffffff; color: #1D9E75; text-decoration: none; padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: 700; font-size: 0.95rem; box-shadow: 0 2px 5px rgba(0,0,0,0.15); transition: transform 0.2s;">
-      + Manual Entry
+    <a href="/manual" class="btn-manual">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Manual Entry
     </a>
   </header>
 
-  <main class="container">
-    <section class="stats-grid" id="summaryCards">
-      <article class="card">
-        <div class="stat-card-top"></div>
-        <div class="stat-card-body">
-          <div class="stat-number" id="totalStates">-</div>
-          <div class="stat-label">Total States</div>
-        </div>
-      </article>
-      <article class="card">
-        <div class="stat-card-top"></div>
-        <div class="stat-card-body">
-          <div class="stat-number" id="energyHubs">-</div>
-          <div class="stat-label">Energy Hubs</div>
-        </div>
-      </article>
-      <article class="card">
-        <div class="stat-card-top"></div>
-        <div class="stat-card-body">
-          <div class="stat-number" id="energyConsumers">-</div>
-          <div class="stat-label">Energy Consumers</div>
-        </div>
-      </article>
-      <article class="card">
-        <div class="stat-card-top"></div>
-        <div class="stat-card-body">
-          <div class="stat-number" id="highestOutput">-</div>
-          <div class="stat-label">Highest Output (MW)</div>
-        </div>
-      </article>
-    </section>
+  <main>
+    <div class="container">
 
-    <section class="row-two">
-      <article class="card">
-        <iframe class="map-frame" title="India Cluster Map" id="indiaMapFrame"></iframe>
-      </article>
+      <!-- ───────────── KPI CARDS ───────────── -->
+      <section class="stats-grid">
 
-      <article class="card panel">
-        <label class="field-label" for="stateSelect">Select a State</label>
-        <select id="stateSelect" class="state-select"></select>
+        <article class="kpi-card c1">
+          <div class="kpi-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2C8.134 2 5 5.134 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.866-3.134-7-7-7z"/>
+              <circle cx="12" cy="9" r="2.5"/>
+            </svg>
+          </div>
+          <div class="kpi-value" id="totalStates"><span class="skeleton">&nbsp;&nbsp;&nbsp;&nbsp;</span></div>
+          <div class="kpi-label">Total States</div>
+        </article>
 
-        <div class="badge-wrap" id="clusterBadgeWrap"></div>
+        <article class="kpi-card c2">
+          <div class="kpi-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="9" width="18" height="13" rx="2"/><path d="M8 9V6a4 4 0 018 0v3"/><line x1="12" y1="13" x2="12" y2="17"/>
+            </svg>
+          </div>
+          <div class="kpi-value" id="energyHubs"><span class="skeleton">&nbsp;&nbsp;&nbsp;&nbsp;</span></div>
+          <div class="kpi-label">Energy Hubs</div>
+        </article>
 
-        <div class="state-stats">
-          <div class="mini-stat"><div class="v" id="sTotal">-</div><div class="k">Total Renewable</div></div>
-          <div class="mini-stat"><div class="v" id="sSolar">-</div><div class="k">Solar</div></div>
-          <div class="mini-stat"><div class="v" id="sWind">-</div><div class="k">Wind</div></div>
-          <div class="mini-stat"><div class="v" id="sBiomass">-</div><div class="k">Biomass</div></div>
-          <div class="mini-stat"><div class="v" id="sHydro">-</div><div class="k">Small Hydro</div></div>
-        </div>
-      </article>
-    </section>
+        <article class="kpi-card c3">
+          <div class="kpi-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+            </svg>
+          </div>
+          <div class="kpi-value" id="energyConsumers"><span class="skeleton">&nbsp;&nbsp;&nbsp;&nbsp;</span></div>
+          <div class="kpi-label">Energy Consumers</div>
+        </article>
 
-    <section class="charts-grid">
-      <article class="card chart-card">
-        <h3 class="chart-title">Monthly Total Renewable (Selected State)</h3>
-        <canvas id="monthlyTotalChart" height="220"></canvas>
-      </article>
-      <article class="card chart-card">
-        <h3 class="chart-title">Monthly Energy Mix</h3>
-        <canvas id="monthlyMixChart" height="220"></canvas>
-      </article>
-    </section>
+        <article class="kpi-card c4">
+          <div class="kpi-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+            </svg>
+          </div>
+          <div class="kpi-value" id="highestOutput"><span class="skeleton">&nbsp;&nbsp;&nbsp;&nbsp;</span></div>
+          <div class="kpi-label">Highest Output (MW)</div>
+        </article>
 
-    
-      </form>
-    </section>
+      </section>
+
+      <!-- ───────────── MAP + STATE PANEL ───────────── -->
+      <section class="row-two">
+
+        <article class="card">
+          <iframe class="map-frame" title="India Cluster Map" id="indiaMapFrame"></iframe>
+        </article>
+
+        <article class="card state-panel">
+
+          <p class="panel-title">State Explorer</p>
+
+          <div>
+            <label class="field-label" for="stateSelect">Select a State / UT</label>
+            <select id="stateSelect" class="state-select"></select>
+            <div style="margin-top:.75rem;" id="clusterBadgeWrap"></div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div>
+            <p class="panel-title" style="margin-bottom:.7rem;">Energy Breakdown</p>
+            <div class="energy-grid">
+              <div class="energy-cell">
+                <div class="energy-icon" style="background:rgba(244,196,48,.15);">⚡</div>
+                <div class="energy-val" id="sTotal">—</div>
+                <div class="energy-key">Total</div>
+              </div>
+              <div class="energy-cell">
+                <div class="energy-icon" style="background:rgba(244,196,48,.15);">☀️</div>
+                <div class="energy-val" id="sSolar">—</div>
+                <div class="energy-key">Solar</div>
+              </div>
+              <div class="energy-cell">
+                <div class="energy-icon" style="background:rgba(169,199,212,.25);">💨</div>
+                <div class="energy-val" id="sWind">—</div>
+                <div class="energy-key">Wind</div>
+              </div>
+              <div class="energy-cell">
+                <div class="energy-icon" style="background:rgba(56,118,29,.12);">🌿</div>
+                <div class="energy-val" id="sBiomass">—</div>
+                <div class="energy-key">Biomass</div>
+              </div>
+              <div class="energy-cell">
+                <div class="energy-icon" style="background:rgba(103,58,183,.1);">💧</div>
+                <div class="energy-val" id="sHydro">—</div>
+                <div class="energy-key">Hydro</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div id="miniBarSection" style="display:none;">
+            <p class="panel-title" style="margin-bottom:.8rem;">Mix Contribution</p>
+            <div class="mini-bar-wrap">
+              <div class="mini-bar-label"><span>Solar</span><span id="pSolar">—</span></div>
+              <div class="mini-bar-track"><div class="mini-bar-fill mb-solar" id="bSolar" style="width:0%"></div></div>
+            </div>
+            <div class="mini-bar-wrap" style="margin-top:.65rem;">
+              <div class="mini-bar-label"><span>Wind</span><span id="pWind">—</span></div>
+              <div class="mini-bar-track"><div class="mini-bar-fill mb-wind" id="bWind" style="width:0%"></div></div>
+            </div>
+            <div class="mini-bar-wrap" style="margin-top:.65rem;">
+              <div class="mini-bar-label"><span>Biomass</span><span id="pBiomass">—</span></div>
+              <div class="mini-bar-track"><div class="mini-bar-fill mb-biomass" id="bBiomass" style="width:0%"></div></div>
+            </div>
+            <div class="mini-bar-wrap" style="margin-top:.65rem;">
+              <div class="mini-bar-label"><span>Small Hydro</span><span id="pHydro">—</span></div>
+              <div class="mini-bar-track"><div class="mini-bar-fill mb-hydro" id="bHydro" style="width:0%"></div></div>
+            </div>
+          </div>
+
+        </article>
+
+      </section>
+
+      <!-- ───────────── CHARTS ───────────── -->
+      <section class="charts-grid">
+
+        <article class="card chart-card">
+          <div class="chart-header">
+            <h3 class="chart-title">Monthly Total Renewable</h3>
+          </div>
+          <div class="chart-legend">
+            <div class="legend-item">
+              <div class="legend-dot" style="background:var(--indigo);"></div>
+              Total (MW)
+            </div>
+          </div>
+          <canvas id="monthlyTotalChart" height="190"></canvas>
+        </article>
+
+        <article class="card chart-card">
+          <div class="chart-header">
+            <h3 class="chart-title">Monthly Energy Mix</h3>
+          </div>
+          <div class="chart-legend">
+            <div class="legend-item"><div class="legend-dot" style="background:var(--c-solar);"></div>Solar</div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--c-wind);"></div>Wind</div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--c-biomass);"></div>Biomass</div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--c-hydro);"></div>Small Hydro</div>
+          </div>
+          <canvas id="monthlyMixChart" height="190"></canvas>
+        </article>
+
+      </section>
+
+    </div>
   </main>
 
-  <script src="map.js"></script>
-  <script src="charts.js"></script>
+  <div class="footer">India Renewable Energy Dashboard &mdash; Powered by Predictive ML Analysis</div>
+
+  <script>
+    /* ─── CONFIG ─────────────────────────────────── */
+    const API_BASE = "/api";
+    const MONTH_ORDER = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+
+    Chart.defaults.font.family = "'Inter', sans-serif";
+    Chart.defaults.font.size   = 11;
+    Chart.defaults.color       = "#6B7280";
+
+    const GRID_COLOR = "rgba(0,0,0,.05)";
+    const TICK_COLOR = "#9CA3AF";
+
+    let lineChart = null;
+    let barChart  = null;
+
+    /* ─── UTILS ──────────────────────────────────── */
+    function mw(v) {
+      const n = Number(v);
+      return isNaN(n) ? "—" : n.toFixed(1) + " MW";
+    }
+
+    function pct(part, total) {
+      if (!total || isNaN(total) || total === 0) return "0%";
+      return ((Number(part) / Number(total)) * 100).toFixed(1) + "%";
+    }
+
+    function setText(id, val) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = val;
+    }
+
+    async function fetchJSON(url, opts = {}) {
+      const r = await fetch(url, opts);
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(d.error || "HTTP " + r.status);
+      return d;
+    }
+
+    /* ─── KPI SUMMARY ────────────────────────────── */
+    async function loadSummary() {
+      const s = await fetchJSON(`${API_BASE}/summary`);
+      setText("totalStates",      s.total_states      ?? "—");
+      setText("energyHubs",       s.energy_hubs       ?? "—");
+      setText("energyConsumers",  s.energy_consumers  ?? "—");
+      setText("highestOutput",    s.highest_output_mw != null
+        ? Number(s.highest_output_mw).toFixed(1)
+        : "—");
+    }
+
+    /* ─── STATE DROPDOWN ─────────────────────────── */
+    async function loadStateDropdown() {
+      const states = await fetchJSON(`${API_BASE}/states`);
+      const sel = document.getElementById("stateSelect");
+      states.sort((a, b) => a.state.localeCompare(b.state));
+      sel.innerHTML = "";
+      states.forEach(item => {
+        const opt = document.createElement("option");
+        opt.value = item.state;
+        opt.textContent = item.state;
+        sel.appendChild(opt);
+      });
+
+      sel.addEventListener("change", e => {
+        updateStatePanel(e.target.value);
+        updateCharts(e.target.value);
+        syncMapState(e.target.value);
+      });
+
+      if (states.length) {
+        sel.value = states[0].state;
+        await updateStatePanel(states[0].state);
+        await updateCharts(states[0].state);
+        syncMapState(states[0].state);
+      }
+    }
+
+    /* ─── STATE PANEL ────────────────────────────── */
+    async function updateStatePanel(stateName) {
+      const state = await fetchJSON(`${API_BASE}/state/${encodeURIComponent(stateName)}`);
+
+      /* cluster badge */
+      const clusterLabel = state.Cluster || state.cluster || "Unknown";
+      const isHub = clusterLabel.toLowerCase().includes("hub");
+      const wrap = document.getElementById("clusterBadgeWrap");
+      wrap.innerHTML = `<span class="cluster-tag ${isHub ? 'hub' : 'consumer'}">
+        ${isHub
+          ? '<svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'
+          : '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/></svg>'}
+        ${clusterLabel}
+      </span>`;
+
+      /* energy values */
+      const total   = state.Total_Renewable  ?? state.total_renewable  ?? 0;
+      const solar   = state.Solar            ?? state.solar            ?? 0;
+      const wind    = state.Wind             ?? state.wind             ?? 0;
+      const biomass = state.Biomass          ?? state.biomass          ?? 0;
+      const hydro   = (state["Small Hydro"]  ?? state.small_hydro)     ?? 0;
+
+      setText("sTotal",   mw(total));
+      setText("sSolar",   mw(solar));
+      setText("sWind",    mw(wind));
+      setText("sBiomass", mw(biomass));
+      setText("sHydro",   mw(hydro));
+
+      /* mini progress bars */
+      if (Number(total) > 0) {
+        document.getElementById("miniBarSection").style.display = "block";
+        const pairs = [
+          ["pSolar",   "bSolar",   solar,   "mb-solar"],
+          ["pWind",    "bWind",    wind,    "mb-wind"],
+          ["pBiomass", "bBiomass", biomass, "mb-biomass"],
+          ["pHydro",   "bHydro",   hydro,   "mb-hydro"],
+        ];
+        pairs.forEach(([pid, bid, val]) => {
+          setText(pid, pct(val, total));
+          const bar = document.getElementById(bid);
+          if (bar) bar.style.width = pct(val, total);
+        });
+      }
+    }
+
+    /* ─── CHARTS ─────────────────────────────────── */
+    const commonScales = {
+      x: {
+        grid: { color: GRID_COLOR },
+        ticks: { color: TICK_COLOR }
+      },
+      y: {
+        grid: { color: GRID_COLOR },
+        ticks: { color: TICK_COLOR },
+        beginAtZero: true
+      }
+    };
+
+    async function updateCharts(stateName) {
+      const seasonal = await fetchJSON(`${API_BASE}/seasonal/${encodeURIComponent(stateName)}`);
+
+      const bucket = {};
+      MONTH_ORDER.forEach(m => {
+        bucket[m] = { month: m, Total: 0, Solar: 0, Wind: 0, Biomass: 0, SmallHydro: 0, n: 0 };
+      });
+
+      seasonal.forEach(row => {
+        const month = String(row.month || "").toUpperCase().slice(0, 3);
+        if (!bucket[month]) return;
+        const add = (v) => isFinite(Number(v)) ? Number(v) : 0;
+        bucket[month].Total     += add(row.Total    ?? row.Total_Renewable);
+        bucket[month].Solar     += add(row.Solar    ?? 0);
+        bucket[month].Wind      += add(row.Wind     ?? 0);
+        bucket[month].Biomass   += add(row.Biomass  ?? 0);
+        bucket[month].SmallHydro+= add(row.SmallHydro ?? row["Small Hydro"] ?? 0);
+        bucket[month].n++;
+      });
+
+      const labels   = MONTH_ORDER;
+      const totals   = MONTH_ORDER.map(m => bucket[m].n ? (bucket[m].Total   / bucket[m].n) : 0);
+      const solarD   = MONTH_ORDER.map(m => bucket[m].n ? (bucket[m].Solar   / bucket[m].n) : 0);
+      const windD    = MONTH_ORDER.map(m => bucket[m].n ? (bucket[m].Wind    / bucket[m].n) : 0);
+      const biomassD = MONTH_ORDER.map(m => bucket[m].n ? (bucket[m].Biomass / bucket[m].n) : 0);
+      const hydroD   = MONTH_ORDER.map(m => bucket[m].n ? (bucket[m].SmallHydro / bucket[m].n) : 0);
+
+      /* Line chart */
+      if (lineChart) lineChart.destroy();
+      const ctxLine = document.getElementById("monthlyTotalChart").getContext("2d");
+      lineChart = new Chart(ctxLine, {
+        type: "line",
+        data: {
+          labels,
+          datasets: [{
+            data: totals,
+            borderColor: "#2E4C8A",
+            backgroundColor: "rgba(46,76,138,.08)",
+            fill: true,
+            tension: 0.45,
+            pointRadius: 4,
+            pointHoverRadius: 6,
+            pointBackgroundColor: "#2E4C8A",
+            pointBorderColor: "#fff",
+            pointBorderWidth: 2,
+            borderWidth: 2.5
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false }, tooltip: { mode: "index", intersect: false } },
+          scales: commonScales,
+          animation: { duration: 600, easing: "easeInOutQuart" }
+        }
+      });
+
+      /* Stacked bar chart */
+      if (barChart) barChart.destroy();
+      const ctxBar = document.getElementById("monthlyMixChart").getContext("2d");
+      barChart = new Chart(ctxBar, {
+        type: "bar",
+        data: {
+          labels,
+          datasets: [
+            { label: "Solar",      data: solarD,   backgroundColor: "#F4C430", stack: "s", borderRadius: { topLeft: 0, topRight: 0 } },
+            { label: "Wind",       data: windD,    backgroundColor: "#A9C7D4", stack: "s", borderRadius: { topLeft: 0, topRight: 0 } },
+            { label: "Biomass",    data: biomassD, backgroundColor: "#38761D", stack: "s", borderRadius: { topLeft: 0, topRight: 0 } },
+            { label: "Small Hydro",data: hydroD,   backgroundColor: "#673AB7", stack: "s",
+              borderRadius: { topLeft: 4, topRight: 4 } }
+          ]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false }, tooltip: { mode: "index", intersect: false } },
+          scales: { ...commonScales, x: { ...commonScales.x, stacked: true }, y: { ...commonScales.y, stacked: true } },
+          animation: { duration: 600, easing: "easeInOutQuart" }
+        }
+      });
+    }
+
+    /* ─── MAP ────────────────────────────────────── */
+    function initMap() {
+      const iframe = document.getElementById("indiaMapFrame");
+      if (iframe) iframe.src = "/model/saved/india_map.html?t=" + Date.now();
+    }
+
+    window.highlightState = function(stateName) {
+      const sel = document.getElementById("stateSelect");
+      if (sel) sel.value = stateName;
+      updateStatePanel(stateName);
+      updateCharts(stateName);
+    };
+
+    function syncMapState(stateName) {
+      const iframe = document.getElementById("indiaMapFrame");
+      if (iframe && iframe.contentWindow && iframe.contentWindow.highlightState) {
+        iframe.contentWindow.highlightState(stateName);
+      }
+    }
+
+    /* ─── BOOT ───────────────────────────────────── */
+    document.addEventListener("DOMContentLoaded", async () => {
+      initMap();
+      try {
+        await Promise.all([loadSummary(), loadStateDropdown()]);
+      } catch (err) {
+        console.error(err);
+      }
+    });
+  </script>
+
 </body>
 </html>

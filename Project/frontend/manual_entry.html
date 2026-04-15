@@ -4,207 +4,593 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Manual Entry | Renewable Predictor</title>
-  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --teal: #1D9E75;
-      --text: #2d3436;
-      --bg: #f7faf9;
-      --white: #ffffff;
-      --border: #dfe6e9;
-      --error: #e74c3c;
+      --navy:        #2C3E50;
+      --green:       #006D77;
+      --green-light: #008f9c;
+      --gold:        #DAA520;
+      --indigo:      #2E4C8A;
+      --burgundy:    #7B2D42;
+      --bg:          #F8FAFC;
+      --white:       #ffffff;
+      --text:        #333333;
+      --text-muted:  #6B7280;
+      --border:      #E2E8F0;
+      --shadow-sm:   0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.05);
+      --shadow-md:   0 4px 12px rgba(0,0,0,.08), 0 2px 4px rgba(0,0,0,.04);
+      --shadow-lg:   0 10px 28px rgba(0,0,0,.09), 0 4px 8px rgba(0,0,0,.05);
+      --radius:      14px;
+      --radius-sm:   8px;
     }
 
-    * { box-sizing: border-box; }
+    *, *::before, *::after { box-sizing: border-box; }
 
     body {
       margin: 0;
-      font-family: sans-serif;
-      background: linear-gradient(180deg, #eef8f5 0%, var(--bg) 28%, #ffffff 100%);
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
       color: var(--text);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
       min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* Navigation */
+    /* ─── NAVBAR ─────────────────────────────────────────── */
     .navbar {
-      width: 100%;
-      background: var(--teal);
-      color: var(--white);
-      padding: 1rem 1.5rem;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+      background: var(--navy);
+      padding: 0 2rem;
+      height: 64px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 12px rgba(0,0,0,.25);
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
+
+    .navbar-left { display: flex; flex-direction: column; gap: 2px; }
 
     .navbar h1 {
       margin: 0;
-      font-size: 1.35rem;
-      letter-spacing: 0.2px;
+      font-size: 1.18rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: .2px;
     }
 
-    .back-btn {
-      color: var(--white);
-      text-decoration: none;
+    .navbar .subtitle {
+      font-size: .72rem;
+      color: rgba(255,255,255,.65);
+      font-weight: 400;
+      letter-spacing: .3px;
+      text-transform: uppercase;
+    }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: rgba(255,255,255,.9);
+      border: 1px solid rgba(255,255,255,.25);
+      border-radius: var(--radius-sm);
+      padding: .42rem .95rem;
+      font-size: .82rem;
       font-weight: 600;
-      font-size: 0.95rem;
-      padding: 0.5rem 1rem;
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      border-radius: 8px;
-      transition: all 0.2s;
+      cursor: pointer;
+      text-decoration: none;
+      letter-spacing: .2px;
+      transition: background .15s, border-color .15s;
+      font-family: 'Inter', sans-serif;
+    }
+    .btn-back:hover {
+      background: rgba(255,255,255,.1);
+      border-color: rgba(255,255,255,.5);
     }
 
-    .back-btn:hover { 
-      background: rgba(255, 255, 255, 0.1); 
-      border-color: var(--white);
+    /* ─── PAGE LAYOUT ────────────────────────────────────── */
+    .page-wrap {
+      width: min(860px, 96vw);
+      margin: 2.5rem auto 4rem;
+      display: grid;
+      gap: 1.5rem;
     }
 
-    /* Main Form Container */
-    .container {
-      width: min(800px, 95vw);
-      margin: 3rem auto;
-      background: var(--white);
-      padding: 2.5rem;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    }
-
-    .form-header {
-      margin-bottom: 2.5rem;
+    /* ─── PAGE HEADER ────────────────────────────────────── */
+    .page-header {
       text-align: center;
     }
 
-    .form-header h2 {
-      margin: 0 0 0.5rem;
-      font-size: 1.8rem;
-      color: #145f4a;
+    .page-header .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(46,76,138,.1);
+      color: var(--indigo);
+      border: 1px solid rgba(46,76,138,.2);
+      border-radius: 99px;
+      padding: .28rem .85rem;
+      font-size: .72rem;
       font-weight: 700;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      margin-bottom: .85rem;
     }
 
-    .form-header p {
+    .page-header h2 {
+      margin: 0 0 .5rem;
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -.5px;
+    }
+
+    .page-header p {
       margin: 0;
-      color: #55606b;
-      font-size: 0.95rem;
+      font-size: .9rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* ─── CARD ───────────────────────────────────────────── */
+    .card {
+      background: var(--white);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-md);
+    }
+
+    /* ─── SECTION HEADER ─────────────────────────────────── */
+    .section-head {
+      display: flex;
+      align-items: center;
+      gap: .65rem;
+      padding: 1.4rem 1.8rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .section-head h3 {
+      margin: 0 0 2px;
+      font-size: .92rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .section-head p {
+      margin: 0;
+      font-size: .75rem;
+      color: var(--text-muted);
+    }
+
+    /* ─── FORM GRID ──────────────────────────────────────── */
+    .form-body {
+      padding: 1.5rem 1.8rem 1.8rem;
     }
 
     .form-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1.25rem;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 1.1rem;
     }
 
+    .input-group {}
+
     .input-group label {
-      display: block;
-      font-size: 0.85rem;
-      margin-bottom: 0.4rem;
-      color: #48545c;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: .78rem;
       font-weight: 600;
+      color: var(--text);
+      margin-bottom: .4rem;
+      letter-spacing: .1px;
+    }
+
+    .input-group label .unit {
+      font-size: .7rem;
+      font-weight: 400;
+      color: var(--text-muted);
+      margin-left: 2px;
     }
 
     .input-group input {
       width: 100%;
-      padding: 0.75rem 0.8rem;
-      border: 1px solid #c9d5d1;
-      border-radius: 7px;
-      font-size: 1rem;
-      background: #fff;
+      padding: .65rem .85rem;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: .92rem;
+      font-family: 'Inter', sans-serif;
+      background: var(--white);
       color: var(--text);
-      transition: all 0.2s;
+      transition: border-color .15s, box-shadow .15s;
+      -moz-appearance: textfield;
     }
+    .input-group input::-webkit-inner-spin-button,
+    .input-group input::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+    .input-group input::placeholder { color: #C4CBD4; }
 
     .input-group input:focus {
       outline: none;
-      border-color: var(--teal);
-      box-shadow: 0 0 0 3px rgba(29, 158, 117, 0.15);
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(0,109,119,.15);
     }
 
+    .input-group input.invalid {
+      border-color: #E53E3E;
+      box-shadow: 0 0 0 3px rgba(229,62,62,.12);
+    }
+
+    /* ─── SUBMIT AREA ────────────────────────────────────── */
     .submit-area {
-      margin-top: 2.5rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1.5rem;
+      padding: 1.4rem 1.8rem;
       border-top: 1px solid var(--border);
-      padding-top: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .submit-hint {
+      font-size: .78rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 5px;
     }
 
     .btn-run {
-      background: var(--teal);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, var(--indigo) 0%, #3d62b5 100%);
       color: #fff;
       border: none;
-      padding: 0.8rem 2.5rem;
-      border-radius: 8px;
-      font-size: 1.05rem;
+      padding: .7rem 1.8rem;
+      border-radius: var(--radius-sm);
+      font-size: .92rem;
       font-weight: 700;
+      font-family: 'Inter', sans-serif;
       cursor: pointer;
-      transition: filter 0.2s;
+      letter-spacing: .2px;
+      box-shadow: 0 3px 10px rgba(46,76,138,.35);
+      transition: filter .15s, box-shadow .15s, transform .1s;
+    }
+    .btn-run:hover  { filter: brightness(1.08); box-shadow: 0 5px 16px rgba(46,76,138,.45); }
+    .btn-run:active { transform: scale(.98); }
+    .btn-run:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+
+    /* ─── RESULT CARD ────────────────────────────────────── */
+    .result-card {
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      display: none;
     }
 
-    .btn-run:hover {
-      filter: brightness(0.95);
+    .result-card.visible { display: block; }
+
+    .result-card.success { border-color: rgba(0,109,119,.3); }
+    .result-card.error   { border-color: rgba(229,62,62,.3);  }
+
+    .result-inner {
+      display: flex;
+      align-items: center;
+      gap: 1.4rem;
+      padding: 1.6rem 2rem;
+      background: var(--white);
     }
 
-    #resultBox {
-      font-size: 2rem;
+    .result-icon-wrap {
+      width: 54px;
+      height: 54px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .result-card.success .result-icon-wrap { background: rgba(0,109,119,.1); color: var(--green); }
+    .result-card.error   .result-icon-wrap { background: rgba(229,62,62,.1);  color: #E53E3E; }
+
+    .result-label {
+      font-size: .72rem;
       font-weight: 700;
-      color: #145f4a;
-      min-height: 2.5rem;
+      text-transform: uppercase;
+      letter-spacing: .6px;
+      color: var(--text-muted);
+      margin-bottom: .35rem;
     }
 
-    .error-text { color: var(--error) !important; font-size: 1.1rem !important; }
+    .result-value {
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+      line-height: 1;
+    }
+    .result-card.success .result-value { color: var(--green); }
+    .result-card.error   .result-value { color: #E53E3E; font-size: 1rem; font-weight: 600; letter-spacing: 0; }
+
+    .result-note {
+      font-size: .78rem;
+      color: var(--text-muted);
+      margin-top: .35rem;
+    }
+
+    /* loading spinner */
+    .spinner {
+      width: 22px;
+      height: 22px;
+      border: 2.5px solid rgba(255,255,255,.35);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .65s linear infinite;
+      display: none;
+    }
+    .btn-run.loading .spinner { display: block; }
+    .btn-run.loading .btn-label { display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ─── INFO BANNER ────────────────────────────────────── */
+    .info-banner {
+      background: rgba(46,76,138,.06);
+      border: 1px solid rgba(46,76,138,.15);
+      border-radius: var(--radius-sm);
+      padding: .75rem 1rem;
+      font-size: .78rem;
+      color: var(--indigo);
+      display: flex;
+      align-items: flex-start;
+      gap: .55rem;
+      line-height: 1.5;
+    }
+    .info-banner svg { flex-shrink: 0; margin-top: 1px; }
+
+    /* ─── RESPONSIVE ─────────────────────────────────────── */
+    @media (max-width: 600px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .submit-area { flex-direction: column; align-items: stretch; }
+      .btn-run { justify-content: center; }
+      .result-inner { flex-direction: column; text-align: center; }
+      .page-header h2 { font-size: 1.45rem; }
+    }
   </style>
 </head>
 <body>
 
+  <!-- ───────────── NAVBAR ───────────── -->
   <header class="navbar">
-    <h1>Manual Parameter Entry</h1>
-    <a href="/" class="back-btn">← Back to Dashboard</a>
+    <div class="navbar-left">
+      <h1>Renewable Predictor</h1>
+      <span class="subtitle">Manual Feature Entry &mdash; ML Inference</span>
+    </div>
+    <a href="/" class="btn-back">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+      Back to Dashboard
+    </a>
   </header>
 
-  <main class="container">
-    <div class="form-header">
-      <h2>Inference Engine</h2>
-      <p>Enter environmental conditions to predict renewable output via Random Forest.</p>
+  <main>
+    <div class="page-wrap">
+
+      <!-- ───────────── PAGE HEADER ───────────── -->
+      <div class="page-header">
+        <div class="badge">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+          </svg>
+          ML-Powered Prediction
+        </div>
+        <h2>Predict Renewable Output</h2>
+        <p>Enter atmospheric and solar radiation parameters to estimate the renewable<br>energy generation potential for a given region.</p>
+      </div>
+
+      <!-- ───────────── INFO BANNER ───────────── -->
+      <div class="info-banner">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        All nine parameters are required. Values are passed to a trained Random Forest model that predicts total renewable energy output in megawatts (MW).
+      </div>
+
+      <!-- ───────────── FORM CARD ───────────── -->
+      <form class="card" id="standalonePredictForm" novalidate>
+
+        <!-- Solar Radiation Inputs -->
+        <div class="section-head">
+          <div class="section-icon" style="background:rgba(244,196,48,.15);color:#c49a00;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="4"/>
+              <line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/>
+              <line x1="4.22" y1="4.22" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.78" y2="19.78"/>
+              <line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/>
+              <line x1="4.22" y1="19.78" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.78" y2="4.22"/>
+            </svg>
+          </div>
+          <div>
+            <h3>Solar Radiation Parameters</h3>
+            <p>Irradiance and clearsky metrics at the target location</p>
+          </div>
+        </div>
+        <div class="form-body" style="padding-bottom:1.2rem;">
+          <div class="form-grid">
+            <div class="input-group">
+              <label for="ghi">GHI <span class="unit">W/m²</span></label>
+              <input id="ghi" type="number" step="any" required placeholder="e.g. 420.5">
+            </div>
+            <div class="input-group">
+              <label for="dni">DNI <span class="unit">W/m²</span></label>
+              <input id="dni" type="number" step="any" required placeholder="e.g. 380.0">
+            </div>
+            <div class="input-group">
+              <label for="clearsky_ghi">Clearsky GHI <span class="unit">W/m²</span></label>
+              <input id="clearsky_ghi" type="number" step="any" required placeholder="e.g. 510.0">
+            </div>
+            <div class="input-group">
+              <label for="cloud_opacity">Cloud Opacity <span class="unit">0–1</span></label>
+              <input id="cloud_opacity" type="number" step="any" required placeholder="e.g. 0.3">
+            </div>
+            <div class="input-group">
+              <label for="albedo">Albedo <span class="unit">0–1</span></label>
+              <input id="albedo" type="number" step="any" required placeholder="e.g. 0.2">
+            </div>
+          </div>
+        </div>
+
+        <!-- Atmospheric Inputs -->
+        <div class="section-head" style="border-top:1px solid var(--border);">
+          <div class="section-icon" style="background:rgba(169,199,212,.25);color:#4a8fa8;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/>
+            </svg>
+          </div>
+          <div>
+            <h3>Atmospheric Parameters</h3>
+            <p>Wind, temperature, humidity, and precipitation data</p>
+          </div>
+        </div>
+        <div class="form-body">
+          <div class="form-grid">
+            <div class="input-group">
+              <label for="wind_speed_100m">Wind Speed @ 100m <span class="unit">m/s</span></label>
+              <input id="wind_speed_100m" type="number" step="any" required placeholder="e.g. 6.5">
+            </div>
+            <div class="input-group">
+              <label for="air_temp">Air Temperature <span class="unit">°C</span></label>
+              <input id="air_temp" type="number" step="any" required placeholder="e.g. 28.0">
+            </div>
+            <div class="input-group">
+              <label for="relative_humidity">Relative Humidity <span class="unit">%</span></label>
+              <input id="relative_humidity" type="number" step="any" required placeholder="e.g. 65.0">
+            </div>
+            <div class="input-group">
+              <label for="precipitation_rate">Precipitation Rate <span class="unit">mm/hr</span></label>
+              <input id="precipitation_rate" type="number" step="any" required placeholder="e.g. 1.2">
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <div class="submit-area">
+          <span class="submit-hint">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            Model: Random Forest &mdash; 9 features
+          </span>
+          <button type="submit" class="btn-run" id="runBtn">
+            <span class="btn-label">Run Prediction</span>
+            <div class="spinner"></div>
+          </button>
+        </div>
+
+      </form>
+
+      <!-- ───────────── RESULT ───────────── -->
+      <div class="result-card" id="resultCard">
+        <div class="result-inner">
+          <div class="result-icon-wrap" id="resultIcon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+            </svg>
+          </div>
+          <div>
+            <div class="result-label" id="resultLabel">Predicted Output</div>
+            <div class="result-value" id="resultValue">—</div>
+            <div class="result-note" id="resultNote"></div>
+          </div>
+        </div>
+      </div>
+
     </div>
-
-    <form id="standalonePredictForm">
-      <div class="form-grid">
-        <div class="input-group"><label>GHI</label><input id="ghi" type="number" step="any" required placeholder="0.00"></div>
-        <div class="input-group"><label>DNI</label><input id="dni" type="number" step="any" required placeholder="0.00"></div>
-        <div class="input-group"><label>Wind Speed (100m)</label><input id="wind_speed_100m" type="number" step="any" required placeholder="0.00"></div>
-        <div class="input-group"><label>Air Temp</label><input id="air_temp" type="number" step="any" required placeholder="0.00"></div>
-        <div class="input-group"><label>Relative Humidity</label><input id="relative_humidity" type="number" step="any" required placeholder="0.00"></div>
-        <div class="input-group"><label>Clearsky GHI</label><input id="clearsky_ghi" type="number" step="any" required placeholder="0.00"></div>
-        <div class="input-group"><label>Cloud Opacity</label><input id="cloud_opacity" type="number" step="any" required placeholder="0.00"></div>
-        <div class="input-group"><label>Precipitation</label><input id="precipitation_rate" type="number" step="any" required placeholder="0.00"></div>
-        <div class="input-group"><label>Albedo</label><input id="albedo" type="number" step="any" required placeholder="0.00"></div>
-      </div>
-
-      <div class="submit-area">
-        <button type="submit" class="btn-run">Execute Prediction</button>
-        <div id="resultBox"></div>
-      </div>
-    </form>
   </main>
 
   <script>
-    document.getElementById("standalonePredictForm").addEventListener("submit", async function(e) {
-      e.preventDefault();
-      
-      const ids = ["ghi", "dni", "wind_speed_100m", "air_temp", "relative_humidity", "clearsky_ghi", "cloud_opacity", "precipitation_rate", "albedo"];
-      const payload = {};
-      const resultBox = document.getElementById("resultBox");
-      
-      resultBox.textContent = "Calculating...";
-      resultBox.classList.remove("error-text");
+    const FIELD_IDS = [
+      "ghi", "dni", "wind_speed_100m", "air_temp",
+      "relative_humidity", "clearsky_ghi", "cloud_opacity",
+      "precipitation_rate", "albedo"
+    ];
 
-      ids.forEach(id => {
-        payload[id] = Number(document.getElementById(id).value);
+    const form    = document.getElementById("standalonePredictForm");
+    const runBtn  = document.getElementById("runBtn");
+    const card    = document.getElementById("resultCard");
+
+    /* Live validation */
+    FIELD_IDS.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener("blur", () => {
+        if (el.required && el.value.trim() === "") {
+          el.classList.add("invalid");
+        } else {
+          el.classList.remove("invalid");
+        }
       });
+      el.addEventListener("input", () => el.classList.remove("invalid"));
+    });
+
+    function setResult({ success, value, note }) {
+      card.className = "result-card visible " + (success ? "success" : "error");
+
+      const iconEl   = document.getElementById("resultIcon");
+      const labelEl  = document.getElementById("resultLabel");
+      const valueEl  = document.getElementById("resultValue");
+      const noteEl   = document.getElementById("resultNote");
+
+      if (success) {
+        iconEl.innerHTML = `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`;
+        labelEl.textContent = "Predicted Renewable Output";
+        valueEl.textContent = value;
+        noteEl.textContent  = note || "MW — estimated generation capacity";
+      } else {
+        iconEl.innerHTML = `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
+        labelEl.textContent = "Prediction Failed";
+        valueEl.textContent = value;
+        noteEl.textContent  = note || "";
+      }
+
+      card.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    form.addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      /* Validate */
+      let hasError = false;
+      FIELD_IDS.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (el.value.trim() === "") {
+          el.classList.add("invalid");
+          hasError = true;
+        }
+      });
+      if (hasError) return;
+
+      /* Build payload */
+      const payload = {};
+      FIELD_IDS.forEach(id => { payload[id] = Number(document.getElementById(id).value); });
+
+      /* Loading state */
+      runBtn.classList.add("loading");
+      runBtn.disabled = true;
 
       try {
         const response = await fetch("/api/predict", {
@@ -214,15 +600,19 @@
         });
 
         const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "Server error");
 
-        if (!response.ok) throw new Error(data.error || "Server Error");
+        const mw = Number(data.predicted_renewable).toFixed(2);
+        setResult({ success: true, value: `${mw} MW` });
 
-        resultBox.textContent = `${Number(data.predicted_renewable).toFixed(2)} MW`;
       } catch (err) {
-        resultBox.textContent = err.message;
-        resultBox.classList.add("error-text");
+        setResult({ success: false, value: err.message, note: "Check your inputs or try again." });
+      } finally {
+        runBtn.classList.remove("loading");
+        runBtn.disabled = false;
       }
     });
   </script>
+
 </body>
 </html>
