@@ -1,0 +1,754 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project Summary | India Renewable Energy ML Project</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --navy:    #2C3E50;
+      --green:   #006D77;
+      --indigo:  #2E4C8A;
+      --gold:    #DAA520;
+      --burg:    #7B2D42;
+      --bg:      #F8FAFC;
+      --white:   #ffffff;
+      --text:    #1E293B;
+      --muted:   #64748B;
+      --border:  #E2E8F0;
+      --radius:  14px;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.65;
+    }
+
+    /* NAV */
+    nav {
+      background: var(--navy);
+      padding: 0 2.5rem;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    nav .brand { color: #fff; font-weight: 700; font-size: 1rem; letter-spacing: .1px; }
+    nav .tag {
+      background: rgba(255,255,255,.1);
+      color: rgba(255,255,255,.8);
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 99px;
+      padding: .25rem .8rem;
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .4px;
+      text-transform: uppercase;
+    }
+
+    /* HERO */
+    .hero {
+      background: linear-gradient(135deg, var(--navy) 0%, #1a2d40 100%);
+      padding: 4rem 2.5rem 3.5rem;
+      text-align: center;
+      color: #fff;
+    }
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 99px;
+      padding: .3rem 1rem;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .6px;
+      text-transform: uppercase;
+      margin-bottom: 1.2rem;
+      color: rgba(255,255,255,.9);
+    }
+    .hero h1 {
+      margin: 0 0 .75rem;
+      font-size: 2.4rem;
+      font-weight: 800;
+      letter-spacing: -.6px;
+      line-height: 1.15;
+    }
+    .hero p {
+      margin: 0 auto;
+      max-width: 620px;
+      font-size: .98rem;
+      color: rgba(255,255,255,.72);
+      line-height: 1.7;
+    }
+
+    /* LAYOUT */
+    .page { max-width: 980px; margin: 0 auto; padding: 3rem 1.5rem 5rem; display: grid; gap: 2.5rem; }
+
+    /* SECTION */
+    section {}
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: .65rem;
+      margin-bottom: 1.25rem;
+    }
+    .section-num {
+      width: 28px; height: 28px;
+      border-radius: 8px;
+      background: var(--indigo);
+      color: #fff;
+      font-size: .75rem;
+      font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .section-label h2 {
+      margin: 0;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -.2px;
+    }
+
+    /* CARD */
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 2px 10px rgba(0,0,0,.06);
+      overflow: hidden;
+    }
+    .card-body { padding: 1.6rem 1.8rem; }
+    .card-head {
+      padding: .9rem 1.8rem;
+      border-bottom: 1px solid var(--border);
+      font-size: .78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .6px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+    .card-head-icon {
+      width: 22px; height: 22px;
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .82rem;
+    }
+
+    /* PROSE */
+    p { margin: 0 0 .9rem; font-size: .92rem; color: var(--text); }
+    p:last-child { margin-bottom: 0; }
+    strong { font-weight: 700; }
+
+    /* TWO-COL */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media(max-width:640px) { .two-col { grid-template-columns: 1fr; } }
+
+    /* FEATURE TABLE */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .88rem;
+    }
+    thead tr { background: var(--bg); }
+    th {
+      padding: .65rem 1rem;
+      font-size: .72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: var(--muted);
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: .7rem 1rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      color: var(--text);
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #f8fafc; }
+    .badge {
+      display: inline-block;
+      padding: .18rem .6rem;
+      border-radius: 99px;
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .2px;
+    }
+    .badge-green  { background: rgba(0,109,119,.12); color: var(--green); }
+    .badge-indigo { background: rgba(46,76,138,.12);  color: var(--indigo); }
+    .badge-gold   { background: rgba(218,165,32,.15); color: #9a7500; }
+    .badge-burg   { background: rgba(123,45,66,.1);   color: var(--burg); }
+    .badge-gray   { background: rgba(100,116,139,.1); color: var(--muted); }
+
+    /* CODE */
+    code {
+      font-family: 'Fira Code', monospace;
+      font-size: .8rem;
+      background: #EEF2FF;
+      color: var(--indigo);
+      padding: .12rem .45rem;
+      border-radius: 5px;
+    }
+
+    /* PIPELINE STEPS */
+    .pipeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .pipeline-step {
+      display: flex;
+      gap: 1rem;
+      padding: .95rem 0;
+      border-bottom: 1px solid var(--border);
+      align-items: flex-start;
+    }
+    .pipeline-step:last-child { border-bottom: none; }
+    .step-num {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      border: 2px solid var(--indigo);
+      color: var(--indigo);
+      font-size: .75rem;
+      font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .step-title { font-size: .9rem; font-weight: 700; color: var(--text); margin-bottom: .25rem; }
+    .step-desc  { font-size: .82rem; color: var(--muted); margin: 0; line-height: 1.55; }
+    .step-code  { margin-top: .45rem; font-size: .78rem; }
+
+    /* INFO ROWS */
+    .info-row {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .info-chip {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: .55rem 1rem;
+      font-size: .8rem;
+    }
+    .info-chip .key { font-weight: 600; color: var(--muted); margin-right: .35rem; text-transform: uppercase; font-size: .68rem; letter-spacing: .4px; }
+    .info-chip .val { font-weight: 700; color: var(--text); }
+
+    /* METRIC CARDS */
+    .metrics-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+    @media(max-width:480px) { .metrics-row { grid-template-columns: 1fr; } }
+    .metric-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.2rem 1.4rem;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,.05);
+    }
+    .metric-val  { font-size: 1.9rem; font-weight: 800; letter-spacing: -1px; }
+    .metric-key  { font-size: .72rem; font-weight: 600; text-transform: uppercase; letter-spacing: .4px; color: var(--muted); margin-top: .3rem; }
+    .metric-note { font-size: .72rem; color: var(--muted); margin-top: .4rem; }
+
+    /* CALLOUT */
+    .callout {
+      border-radius: 10px;
+      padding: 1rem 1.2rem;
+      font-size: .85rem;
+      display: flex;
+      gap: .75rem;
+      align-items: flex-start;
+      line-height: 1.55;
+    }
+    .callout-indigo { background: rgba(46,76,138,.07); border: 1px solid rgba(46,76,138,.18); color: #1e3a7a; }
+    .callout-green  { background: rgba(0,109,119,.07); border: 1px solid rgba(0,109,119,.2);  color: #00494f; }
+    .callout-gold   { background: rgba(218,165,32,.1); border: 1px solid rgba(218,165,32,.3); color: #7a5900; }
+    .callout svg { flex-shrink: 0; margin-top: 1px; }
+
+    /* IMPORTANCE BAR */
+    .fi-row { display: flex; align-items: center; gap: .75rem; padding: .55rem 0; border-bottom: 1px solid var(--border); }
+    .fi-row:last-child { border-bottom: none; }
+    .fi-name { width: 180px; font-size: .82rem; font-weight: 600; flex-shrink: 0; }
+    .fi-bar-track { flex: 1; height: 8px; background: var(--border); border-radius: 99px; overflow: hidden; }
+    .fi-bar-fill  { height: 100%; border-radius: 99px; background: var(--indigo); transition: width .6s; }
+    .fi-pct { width: 38px; font-size: .78rem; font-weight: 700; color: var(--muted); text-align: right; flex-shrink: 0; }
+
+    /* FOOTER */
+    footer {
+      background: var(--navy);
+      color: rgba(255,255,255,.55);
+      text-align: center;
+      font-size: .75rem;
+      padding: 1.5rem;
+      letter-spacing: .2px;
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <span class="brand">India Renewable Energy — ML Project</span>
+  <span class="tag">Project Summary</span>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-pill">
+    <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+    Machine Learning · Data Science
+  </div>
+  <h1>India Renewable Energy<br>ML Project — Full Summary</h1>
+  <p>A complete breakdown of the dataset, features, model architecture, training pipeline, evaluation metrics, and analytical outputs powering the India Renewable Energy Dashboard.</p>
+</div>
+
+<div class="page">
+
+  <!-- ─── 1. DATASET ─────────────────────────────────── -->
+  <section>
+    <div class="section-label">
+      <div class="section-num">1</div>
+      <h2>Dataset Used</h2>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div class="card-head-icon" style="background:rgba(0,109,119,.1);">📦</div>
+        Primary Dataset
+      </div>
+      <div class="card-body">
+        <p>The dataset is <strong>state-wise and time-series in nature</strong>, combining climate/weather observations with renewable energy installation and generation data across <strong>34 States and Union Territories of India</strong>, spanning multiple years (2006 onwards).</p>
+        <p>It was compiled from two sources:</p>
+        <div class="info-row" style="margin-bottom:1rem;">
+          <div class="info-chip"><span class="key">File 1</span><span class="val">renewable_energy_dataset.csv</span></div>
+          <div class="info-chip"><span class="key">File 2</span><span class="val">STATEWISE_CLIMATE_RENEWABLEENERGY_DATA/</span></div>
+          <div class="info-chip"><span class="key">Rows</span><span class="val">635</span></div>
+          <div class="info-chip"><span class="key">States / UTs</span><span class="val">34</span></div>
+        </div>
+
+        <div class="two-col">
+          <div>
+            <p style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:.5rem;">Raw Columns (Energy)</p>
+            <table>
+              <thead><tr><th>Column</th><th>Description</th></tr></thead>
+              <tbody>
+                <tr><td><code>Installed - Solar Power</code></td><td>Solar capacity (MW)</td></tr>
+                <tr><td><code>Installed - Wind Power</code></td><td>Wind capacity (MW)</td></tr>
+                <tr><td><code>Installed - Bio-Mass Power</code></td><td>Biomass capacity (MW)</td></tr>
+                <tr><td><code>Installed - Small Hydro Power</code></td><td>Small hydro capacity (MW)</td></tr>
+                <tr><td><code>Installed - Waste to Energy</code></td><td>Waste-to-energy (MW)</td></tr>
+                <tr><td><code>Population</code></td><td>State population</td></tr>
+                <tr><td><code>GSDP (crore INR)</code></td><td>State GDP in crores</td></tr>
+                <tr><td><code>Zone</code></td><td>Geographic zone</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div>
+            <p style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:.5rem;">Raw Columns (Climate)</p>
+            <table>
+              <thead><tr><th>Column</th><th>Description</th></tr></thead>
+              <tbody>
+                <tr><td><code>ghi</code></td><td>Global Horizontal Irradiance (W/m²)</td></tr>
+                <tr><td><code>dni</code></td><td>Direct Normal Irradiance (W/m²)</td></tr>
+                <tr><td><code>wind_speed_100m</code></td><td>Wind speed at 100m height (m/s)</td></tr>
+                <tr><td><code>air_temp</code></td><td>Air temperature (°C)</td></tr>
+                <tr><td><code>relative_humidity</code></td><td>Relative humidity (%)</td></tr>
+                <tr><td><code>clearsky_ghi</code></td><td>Clear-sky GHI (W/m²)</td></tr>
+                <tr><td><code>cloud_opacity</code></td><td>Cloud opacity (0–1)</td></tr>
+                <tr><td><code>precipitation_rate</code></td><td>Precipitation rate (mm/hr)</td></tr>
+                <tr><td><code>albedo</code></td><td>Surface albedo (0–1)</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── 2. VARIABLES ─────────────────────────────────── -->
+  <section>
+    <div class="section-label">
+      <div class="section-num">2</div>
+      <h2>Variables Used</h2>
+    </div>
+
+    <div class="two-col">
+      <!-- Target Variables -->
+      <div class="card">
+        <div class="card-head">
+          <div class="card-head-icon" style="background:rgba(123,45,66,.1);">🎯</div>
+          Target Variables (What the model predicts)
+        </div>
+        <div class="card-body">
+          <div style="margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid var(--border);">
+            <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.35rem;">
+              <span class="badge badge-indigo">Regression</span>
+              <strong style="font-size:.88rem;">Total_Renewable</strong>
+            </div>
+            <p style="font-size:.82rem;color:var(--muted);">Continuous numeric value in <strong>MW</strong>. Computed by summing all four installed capacity columns:<br><code>Solar + Wind + Biomass + Small Hydro</code></p>
+          </div>
+          <div>
+            <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.35rem;">
+              <span class="badge badge-green">Clustering</span>
+              <strong style="font-size:.88rem;">Cluster</strong>
+            </div>
+            <p style="font-size:.82rem;color:var(--muted);">Categorical label assigned by K-Means. Two classes:<br>
+              <span class="badge badge-gold" style="margin-right:.3rem;">Energy Hub</span> — high total renewable output<br>
+              <span class="badge badge-burg" style="margin-top:.3rem;">Energy Consumer</span> — low total renewable output
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature Variables -->
+      <div class="card">
+        <div class="card-head">
+          <div class="card-head-icon" style="background:rgba(46,76,138,.1);">🔢</div>
+          Feature Variables (Predictors — 9 total)
+        </div>
+        <div class="card-body">
+          <table>
+            <thead><tr><th>#</th><th>Feature</th><th>Unit</th><th>Type</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td><code>ghi</code></td><td>W/m²</td><td><span class="badge badge-gold">Solar</span></td></tr>
+              <tr><td>2</td><td><code>dni</code></td><td>W/m²</td><td><span class="badge badge-gold">Solar</span></td></tr>
+              <tr><td>3</td><td><code>clearsky_ghi</code></td><td>W/m²</td><td><span class="badge badge-gold">Solar</span></td></tr>
+              <tr><td>4</td><td><code>cloud_opacity</code></td><td>0–1</td><td><span class="badge badge-gray">Atmos</span></td></tr>
+              <tr><td>5</td><td><code>albedo</code></td><td>0–1</td><td><span class="badge badge-gray">Atmos</span></td></tr>
+              <tr><td>6</td><td><code>wind_speed_100m</code></td><td>m/s</td><td><span class="badge badge-indigo">Wind</span></td></tr>
+              <tr><td>7</td><td><code>air_temp</code></td><td>°C</td><td><span class="badge badge-gray">Atmos</span></td></tr>
+              <tr><td>8</td><td><code>relative_humidity</code></td><td>%</td><td><span class="badge badge-gray">Atmos</span></td></tr>
+              <tr><td>9</td><td><code>precipitation_rate</code></td><td>mm/hr</td><td><span class="badge badge-gray">Atmos</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── 3. ML METHODS ─────────────────────────────────── -->
+  <section>
+    <div class="section-label">
+      <div class="section-num">3</div>
+      <h2>ML Methods &amp; Justification</h2>
+    </div>
+
+    <div style="display:grid;gap:1rem;">
+
+      <!-- Random Forest -->
+      <div class="card">
+        <div class="card-head" style="background:rgba(46,76,138,.04);">
+          <div class="card-head-icon" style="background:rgba(46,76,138,.12);">🌲</div>
+          Method A — Random Forest Regressor (Supervised Learning)
+        </div>
+        <div class="card-body">
+          <div class="two-col" style="margin-bottom:1.2rem;">
+            <div>
+              <p style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:.5rem;">Configuration</p>
+              <div class="info-row">
+                <div class="info-chip"><span class="key">Estimators</span><span class="val">100 trees</span></div>
+                <div class="info-chip"><span class="key">Random State</span><span class="val">42</span></div>
+                <div class="info-chip"><span class="key">Train Split</span><span class="val">80%</span></div>
+                <div class="info-chip"><span class="key">Test Split</span><span class="val">20%</span></div>
+                <div class="info-chip"><span class="key">Shuffle</span><span class="val">Yes</span></div>
+                <div class="info-chip"><span class="key">Scaling</span><span class="val">None required</span></div>
+              </div>
+            </div>
+            <div>
+              <p style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:.5rem;">Why Random Forest?</p>
+              <ul style="margin:0;padding-left:1.2rem;font-size:.85rem;color:var(--text);line-height:1.65;">
+                <li>Handles <strong>non-linear relationships</strong> between weather/climate inputs and energy output naturally</li>
+                <li><strong>Ensemble method</strong> — averages 100 trees, reducing overfitting and variance</li>
+                <li><strong>No strict feature scaling</strong> required for tree-based models</li>
+                <li>Natively produces <strong>Feature Importance scores</strong> (used in analysis)</li>
+                <li>Robust to <strong>outliers</strong> in climate data</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="callout callout-indigo">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            The trained model is persisted as <code>model/saved/rf_model.pkl</code> and loaded at server startup. Predictions are served in real-time via the <code>POST /api/predict</code> endpoint. The model is only trained once — it checks for the <code>.pkl</code> file before training to avoid unnecessary recomputation.
+          </div>
+        </div>
+      </div>
+
+      <!-- K-Means -->
+      <div class="card">
+        <div class="card-head" style="background:rgba(0,109,119,.04);">
+          <div class="card-head-icon" style="background:rgba(0,109,119,.12);">🔵</div>
+          Method B — K-Means Clustering (Unsupervised Learning)
+        </div>
+        <div class="card-body">
+          <div class="two-col" style="margin-bottom:1.2rem;">
+            <div>
+              <p style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:.5rem;">Configuration</p>
+              <div class="info-row">
+                <div class="info-chip"><span class="key">Clusters (k)</span><span class="val">2</span></div>
+                <div class="info-chip"><span class="key">Random State</span><span class="val">42</span></div>
+                <div class="info-chip"><span class="key">n_init</span><span class="val">10</span></div>
+                <div class="info-chip"><span class="key">Scaling</span><span class="val">StandardScaler</span></div>
+                <div class="info-chip"><span class="key">k Selection</span><span class="val">Elbow Method</span></div>
+                <div class="info-chip"><span class="key">Features</span><span class="val">Solar, Wind, Biomass, Hydro</span></div>
+              </div>
+            </div>
+            <div>
+              <p style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:.5rem;">Why K-Means?</p>
+              <ul style="margin:0;padding-left:1.2rem;font-size:.85rem;color:var(--text);line-height:1.65;">
+                <li><strong>Unsupervised</strong> — discovers natural groupings without pre-labelled categories</li>
+                <li><strong>k=2</strong> chosen via Elbow Curve analysis (tested k=1 to 10)</li>
+                <li>State-level <strong>energy profiles</strong> (mean across years) used as input vectors</li>
+                <li>Cluster assigned human-readable labels: <strong>Energy Hub</strong> (high output) vs <strong>Energy Consumer</strong> (low output) based on mean <code>Total_Renewable</code> per cluster</li>
+                <li>Results visualized on a <strong>Folium choropleth map</strong></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="callout callout-green">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            The cluster label for each state is stored in <code>model/saved/cluster_labels.csv</code> and used by the dashboard to colour the India map and display the "Energy Hub" / "Energy Consumer" badge. The clustering uses <strong>StandardScaler</strong> (saved as <code>scaler.pkl</code>) since K-Means is distance-based and requires normalized features.
+          </div>
+
+          <!-- Cluster results -->
+          <div style="margin-top:1.2rem;">
+            <p style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:.6rem;">Cluster Results (from cluster_labels.csv)</p>
+            <table>
+              <thead><tr><th>Cluster</th><th>Count</th><th>Representative States</th><th>Characteristic</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><span class="badge badge-gold">Energy Hub</span></td>
+                  <td>6</td>
+                  <td>Tamil Nadu, Karnataka, Gujarat, Rajasthan, Maharashtra, Andhra Pradesh</td>
+                  <td>Very high total renewable output (1,000–10,000+ MW). Major generators.</td>
+                </tr>
+                <tr>
+                  <td><span class="badge badge-burg">Energy Consumer</span></td>
+                  <td>28</td>
+                  <td>Most NE states, UTs, Bihar, Jharkhand, Goa, etc.</td>
+                  <td>Lower renewable generation. Smaller states or early-stage adopters.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ─── 4. PIPELINE ─────────────────────────────────── -->
+  <section>
+    <div class="section-label">
+      <div class="section-num">4</div>
+      <h2>Data Pipeline &amp; Processing Steps</h2>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <div class="pipeline">
+          <div class="pipeline-step">
+            <div class="step-num">1</div>
+            <div>
+              <div class="step-title">Data Loading</div>
+              <p class="step-desc">Two sources loaded: the integrated CSV (<code>renewable_energy_dataset.csv</code>) and individual state Excel/CSV files from the <code>STATEWISE_CLIMATE_RENEWABLEENERGY_DATA/</code> folder. Shape, dtypes, and null counts printed for diagnostics.</p>
+              <p class="step-code"><code>data_loader.load_integrated()</code> · <code>data_loader.load_all_states()</code></p>
+            </div>
+          </div>
+          <div class="pipeline-step">
+            <div class="step-num">2</div>
+            <div>
+              <div class="step-title">Data Cleaning &amp; Standardisation</div>
+              <p class="step-desc">Column names converted to <strong>snake_case</strong>. State name aliases resolved (e.g. "Orissa" → "Odisha", "Delhi" → "NCT of Delhi"). Energy columns unified under canonical names (<code>wind</code>, <code>solar</code>, <code>biomass</code>, <code>small_hydro</code>). Rows missing all four energy columns are dropped.</p>
+              <p class="step-code"><code>preprocess.clean_data(df)</code></p>
+            </div>
+          </div>
+          <div class="pipeline-step">
+            <div class="step-num">3</div>
+            <div>
+              <div class="step-title">Feature Engineering</div>
+              <p class="step-desc"><code>Total_Renewable</code> is computed as the row-wise sum of all four renewable energy types. A <strong>state-level mean profile</strong> is generated by grouping on state name and computing the numeric column means — this collapses the time-series into one representative row per state.</p>
+              <p class="step-code"><code>preprocess.engineer_features(df)</code> → saves <code>state_profiles.csv</code></p>
+            </div>
+          </div>
+          <div class="pipeline-step">
+            <div class="step-num">4</div>
+            <div>
+              <div class="step-title">Feature Scaling</div>
+              <p class="step-desc"><strong>StandardScaler</strong> applied to the 9 climate features before K-Means clustering. The fitted scaler is saved as <code>scaler.pkl</code> for consistent transformation during inference. Note: the Random Forest does <em>not</em> require scaling.</p>
+              <p class="step-code"><code>preprocess.scale_features(df, feature_cols)</code> → saves <code>scaler.pkl</code></p>
+            </div>
+          </div>
+          <div class="pipeline-step">
+            <div class="step-num">5</div>
+            <div>
+              <div class="step-title">Train / Test Split (for Regression)</div>
+              <p class="step-desc"><strong>80/20 split</strong> with <code>shuffle=True</code> and <code>random_state=42</code> for reproducibility. The 9 climate features form matrix <strong>X</strong>; <code>Total_Renewable</code> is the target vector <strong>y</strong>. Splits are saved as CSVs to avoid re-splitting on re-runs.</p>
+              <p class="step-code"><code>split.create_splits(df)</code> → saves <code>X_train.csv</code>, <code>X_test.csv</code>, <code>y_train.csv</code>, <code>y_test.csv</code></p>
+            </div>
+          </div>
+          <div class="pipeline-step">
+            <div class="step-num">6</div>
+            <div>
+              <div class="step-title">K-Means Clustering</div>
+              <p class="step-desc">Elbow curve plotted for k=1 to 10. <strong>k=2</strong> selected. Cluster with higher mean <code>Total_Renewable</code> is labelled <strong>"Energy Hub"</strong>; the other is <strong>"Energy Consumer"</strong>. Results saved and visualised on a Folium India map.</p>
+              <p class="step-code"><code>clustering.run_clustering(df_scaled, df_states)</code> → saves <code>cluster_labels.csv</code>, <code>elbow_curve.png</code>, <code>india_map.html</code></p>
+            </div>
+          </div>
+          <div class="pipeline-step">
+            <div class="step-num">7</div>
+            <div>
+              <div class="step-title">Random Forest Training &amp; Evaluation</div>
+              <p class="step-desc">100-tree Random Forest trained on the training split. RMSE and R² computed on the held-out test set. Feature importance bar chart saved. Model persisted as <code>rf_model.pkl</code>. Actual-vs-Predicted and Residual plots generated for diagnostics.</p>
+              <p class="step-code"><code>train_rf.train_and_save(df)</code> → saves <code>rf_model.pkl</code>, <code>feature_importance.png</code></p>
+            </div>
+          </div>
+          <div class="pipeline-step">
+            <div class="step-num">8</div>
+            <div>
+              <div class="step-title">Seasonal Analysis</div>
+              <p class="step-desc">Monthly renewable output heatmap across all states generated. Top 5 states by mean output plotted as time-series trend lines. Stacked monthly energy mix charts generated for Karnataka and Tamil Nadu.</p>
+              <p class="step-code"><code>seasonal_analysis.plot_monthly_heatmap(df)</code> · <code>plot_top_states_trend(df)</code> · <code>plot_energy_mix(df, state)</code></p>
+            </div>
+          </div>
+          <div class="pipeline-step">
+            <div class="step-num">9</div>
+            <div>
+              <div class="step-title">Flask API &amp; Interactive Frontend</div>
+              <p class="step-desc">All saved artefacts loaded at server startup. REST API exposes <code>/api/states</code>, <code>/api/state/&lt;name&gt;</code>, <code>/api/seasonal/&lt;name&gt;</code>, <code>/api/summary</code>, and <code>POST /api/predict</code>. Frontend renders the dashboard, choropleth map iframe, Chart.js visualisations, and manual prediction form.</p>
+              <p class="step-code"><code>backend/app.py</code> (Flask) · <code>frontend/index.html</code> + <code>charts.js</code></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── 5. EVALUATION ─────────────────────────────────── -->
+  <section>
+    <div class="section-label">
+      <div class="section-num">5</div>
+      <h2>Model Evaluation Metrics</h2>
+    </div>
+
+    <div class="metrics-row" style="margin-bottom:1rem;">
+      <div class="metric-card">
+        <div class="metric-val" style="color:var(--indigo);">RMSE</div>
+        <div class="metric-key">Root Mean Square Error</div>
+        <div class="metric-note">Lower is better. Measures average prediction error in MW units.</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-val" style="color:var(--green);">R²</div>
+        <div class="metric-key">Coefficient of Determination</div>
+        <div class="metric-note">Closer to 1.0 is better. Proportion of variance explained by the model.</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-val" style="color:var(--gold);">Elbow</div>
+        <div class="metric-key">Inertia (K-Means)</div>
+        <div class="metric-note">Used to select optimal k. Diminishing return after k=2 confirmed.</div>
+      </div>
+    </div>
+
+    <div class="callout callout-gold">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      The evaluation scripts also generate <strong>Actual vs Predicted scatter plot</strong> (with ideal diagonal reference line and R² annotation) and a <strong>two-panel Residual Diagnostic plot</strong> (Residuals vs Predicted + Residual Histogram) for assessing homoscedasticity and normality of errors.
+    </div>
+  </section>
+
+  <!-- ─── 6. FEATURE IMPORTANCE ─────────────────────────── -->
+  <section>
+    <div class="section-label">
+      <div class="section-num">6</div>
+      <h2>Expected Feature Importance (Random Forest)</h2>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div class="card-head-icon" style="background:rgba(46,76,138,.1);">📊</div>
+        Approximate ranking based on domain knowledge and model behaviour
+      </div>
+      <div class="card-body">
+        <p style="font-size:.82rem;color:var(--muted);margin-bottom:1.2rem;">Solar and wind irradiance metrics tend to dominate feature importance in renewable energy regression models due to their direct causal relationship with generation capacity.</p>
+        <div class="fi-row"><div class="fi-name"><code>ghi</code> — Global Horizontal Irradiance</div><div class="fi-bar-track"><div class="fi-bar-fill" style="width:32%;background:var(--indigo);"></div></div><div class="fi-pct">~32%</div></div>
+        <div class="fi-row"><div class="fi-name"><code>wind_speed_100m</code></div><div class="fi-bar-track"><div class="fi-bar-fill" style="width:26%;background:var(--indigo);"></div></div><div class="fi-pct">~26%</div></div>
+        <div class="fi-row"><div class="fi-name"><code>clearsky_ghi</code></div><div class="fi-bar-track"><div class="fi-bar-fill" style="width:18%;background:var(--green);"></div></div><div class="fi-pct">~18%</div></div>
+        <div class="fi-row"><div class="fi-name"><code>dni</code> — Direct Normal Irradiance</div><div class="fi-bar-track"><div class="fi-bar-fill" style="width:10%;background:var(--green);"></div></div><div class="fi-pct">~10%</div></div>
+        <div class="fi-row"><div class="fi-name"><code>cloud_opacity</code></div><div class="fi-bar-track"><div class="fi-bar-fill" style="width:6%;background:#DAA520;"></div></div><div class="fi-pct">~6%</div></div>
+        <div class="fi-row"><div class="fi-name"><code>air_temp</code></div><div class="fi-bar-track"><div class="fi-bar-fill" style="width:4%;background:#DAA520;"></div></div><div class="fi-pct">~4%</div></div>
+        <div class="fi-row"><div class="fi-name"><code>relative_humidity</code></div><div class="fi-bar-track"><div class="fi-bar-fill" style="width:2%;background:var(--muted);"></div></div><div class="fi-pct">~2%</div></div>
+        <div class="fi-row"><div class="fi-name"><code>precipitation_rate</code></div><div class="fi-bar-track"><div class="fi-bar-fill" style="width:1.5%;background:var(--muted);"></div></div><div class="fi-pct">~1.5%</div></div>
+        <div class="fi-row"><div class="fi-name"><code>albedo</code></div><div class="fi-bar-track"><div class="fi-bar-fill" style="width:0.5%;background:var(--muted);"></div></div><div class="fi-pct">~0.5%</div></div>
+        <p style="margin-top:1rem;font-size:.75rem;color:var(--muted);">* Actual values are saved in <code>model/saved/feature_importance.png</code> after training. The bar chart above reflects typical importance ordering for this class of model.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── 7. OUTPUTS ─────────────────────────────────── -->
+  <section>
+    <div class="section-label">
+      <div class="section-num">7</div>
+      <h2>Saved Artefacts &amp; Outputs</h2>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <table>
+          <thead><tr><th>File</th><th>Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>rf_model.pkl</code></td><td><span class="badge badge-indigo">Model</span></td><td>Trained Random Forest Regressor — loaded by Flask for live predictions</td></tr>
+            <tr><td><code>scaler.pkl</code></td><td><span class="badge badge-indigo">Model</span></td><td>Fitted StandardScaler — used to transform clustering features</td></tr>
+            <tr><td><code>cluster_labels.csv</code></td><td><span class="badge badge-green">Data</span></td><td>State → Cluster mapping (Energy Hub / Consumer) with energy breakdown</td></tr>
+            <tr><td><code>state_profiles.csv</code></td><td><span class="badge badge-green">Data</span></td><td>Mean feature values per state (aggregated across years)</td></tr>
+            <tr><td><code>X_train / y_train.csv</code></td><td><span class="badge badge-gray">Split</span></td><td>80% training data for the regression model</td></tr>
+            <tr><td><code>X_test / y_test.csv</code></td><td><span class="badge badge-gray">Split</span></td><td>20% held-out test data for evaluation</td></tr>
+            <tr><td><code>india_map.html</code></td><td><span class="badge badge-gold">Visual</span></td><td>Interactive Folium choropleth map embedded in dashboard iframe</td></tr>
+            <tr><td><code>elbow_curve.png</code></td><td><span class="badge badge-gold">Visual</span></td><td>Inertia vs k plot used to select k=2 for clustering</td></tr>
+            <tr><td><code>cluster_scatter.png</code></td><td><span class="badge badge-gold">Visual</span></td><td>GHI vs Total_Renewable scatter coloured by cluster label</td></tr>
+            <tr><td><code>feature_importance.png</code></td><td><span class="badge badge-gold">Visual</span></td><td>Bar chart of RF feature importances, sorted descending</td></tr>
+            <tr><td><code>monthly_heatmap.png</code></td><td><span class="badge badge-gold">Visual</span></td><td>State × Month heatmap of renewable output</td></tr>
+            <tr><td><code>top5_monthly_trend.png</code></td><td><span class="badge badge-gold">Visual</span></td><td>Line chart of top 5 states across 12 months</td></tr>
+            <tr><td><code>energy_mix_*.png</code></td><td><span class="badge badge-gold">Visual</span></td><td>Stacked bar monthly energy mix for Karnataka &amp; Tamil Nadu</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── 8. API ENDPOINTS ─────────────────────────────── -->
+  <section>
+    <div class="section-label">
+      <div class="section-num">8</div>
+      <h2>REST API Endpoints (Flask Backend)</h2>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <table>
+          <thead><tr><th>Method</th><th>Endpoint</th><th>Description</th><th>Returns</th></tr></thead>
+          <tbody>
+            <tr><td><span class="badge badge-green">GET</span></td><td><code>/api/summary</code></td><td>Overall statistics across all states</td><td>total_states, energy_hubs, energy_consumers, top_hub, highest_output_mw</td></tr>
+            <tr><td><span class="badge badge-green">GET</span></td><td><code>/api/states</code></td><td>All states with cluster + total renewable</td><td>Array of {state, cluster, total_renewable}</td></tr>
+            <tr><td><span class="badge badge-green">GET</span></td><td><code>/api/state/&lt;name&gt;</code></td><td>Profile for one state</td><td>State row from profiles_df + cluster label</td></tr>
+            <tr><td><span class="badge badge-green">GET</span></td><td><code>/api/seasonal/&lt;name&gt;</code></td><td>Monthly energy breakdown for one state</td><td>Array of monthly records with Solar, Wind, Biomass, Hydro columns</td></tr>
+            <tr><td><span class="badge badge-indigo">POST</span></td><td><code>/api/predict</code></td><td>Run RF model on custom climate inputs</td><td>{predicted_renewable: float, unit: "MW"}</td></tr>
+            <tr><td><span class="badge badge-green">GET</span></td><td><code>/model/saved/&lt;file&gt;</code></td><td>Serve static model artefacts (map HTML, images)</td><td>Static file stream</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>India Renewable Energy ML Project &mdash; Full Project Summary &mdash; Generated from repository analysis of github.com/Sourish-b/Fda-Project</footer>
+
+</body>
+</html>
